@@ -107,7 +107,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = (props) => {
     Subtitle,
     subtitleText,
     Title,
-    titleText = 'Stream Chat',
+    titleText = 'Inbox',
   } = props;
 
   const {

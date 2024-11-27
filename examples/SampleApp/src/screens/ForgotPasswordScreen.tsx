@@ -1,0 +1,122 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { UserSelectorScreenNavigationProp } from './UserSelectorScreen';
+
+type ForgotPasswordScreenProps = {
+  navigation: UserSelectorScreenNavigationProp;
+};
+
+const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
+  const [email, setEmail] = useState('');
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Forgot Password</Text>
+
+      <View style={styles.inputContainer}>
+        <View style={styles.inputHeader}>
+          <Text style={styles.label}>
+            Email Address <Text style={styles.required}>*</Text>
+          </Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={setEmail}
+              placeholder='info@vendorpm.com'
+              keyboardType='email-address'
+              autoCapitalize='none'
+            />
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={styles.resetButton}
+          onPress={() => {
+            /* Handle reset */
+          }}
+        >
+          <Text style={styles.resetButtonText}>Reset</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Did you remember your password? </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+          <Text style={styles.linkText}>Try logging in</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 24,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    gap: 24,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+  },
+  inputContainer: {
+    width: '100%',
+    flexDirection: 'column',
+    gap: 8,
+  },
+  inputHeader: {
+    flexDirection: 'column',
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  required: {
+    color: 'red',
+  },
+  inputWrapper: {
+    borderWidth: 1,
+    gap: 16,
+    borderColor: '#E5E7EB',
+    borderRadius: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  input: {
+    flex: 1,
+    padding: 12,
+    fontSize: 16,
+  },
+  resetButton: {
+    width: '100%',
+    backgroundColor: '#007AFF',
+    padding: 8,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  resetButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  footer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
+  footerText: {
+    fontSize: 16,
+    color: '#4B5563',
+  },
+  linkText: {
+    fontSize: 16,
+    color: '#3B82F6',
+    fontWeight: '500',
+  },
+});
+
+export default ForgotPasswordScreen;

@@ -16,4 +16,7 @@ export default {
   setItem: async <T>(key: string, value: T) => {
     await AsyncStorage.setItem(key, JSON.stringify(value));
   },
+  clear: async () => {
+    await AsyncStorage.clear();
+  },
 };

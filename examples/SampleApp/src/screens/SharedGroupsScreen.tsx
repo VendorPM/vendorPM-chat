@@ -184,13 +184,21 @@ export const SharedGroupsScreen: React.FC<SharedGroupsScreenProps> = ({
     return null;
   }
 
+  const filters = {
+    // Hack to display searching state [, search]
+    members: { $in: [chatClient.user?.id] },
+    // members: { $in: [client.user.id] }
+    type: { $in: ['rfq_chat', 'pm_vendor', 'marketing', 'pitch'] },
+  };
+
   return (
     <View style={styles.container}>
       <ScreenHeader titleText='Shared Groups' />
       <ChannelList
-        filters={{
-          $and: [{ members: { $in: [chatClient?.user?.id] } }, { members: { $in: [user.id] } }],
-        }}
+        // filters={{
+        //   $and: [{ members: { $in: [chatClient?.user?.id] } }, { members: { $in: [user.id] } }],
+        // }}
+        filters={filters}
         List={ListComponent}
         options={{
           watch: false,

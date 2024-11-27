@@ -14,7 +14,6 @@ import { useTheme, version } from 'stream-chat-react-native';
 import { USERS } from '../ChatUsers';
 import { useAppContext } from '../context/AppContext';
 import { RightArrow } from '../icons/RightArrow';
-import { StreamLogo } from '../icons/StreamLogo';
 import { Settings } from '../icons/Settings';
 import AsyncStore from '../utils/AsyncStore';
 
@@ -112,7 +111,6 @@ export const UserSelectorScreen: React.FC<Props> = ({ navigation }) => {
         testID='users-list'
       >
         <View style={styles.titleContainer}>
-          <StreamLogo />
           <Text style={[styles.title, { color: black }]}>Welcome to Stream Chat</Text>
           <Text style={[styles.subTitle, { color: black }]}>
             Select a user to try the {Platform.OS === 'ios' ? 'iOS' : 'Android'} sdk:
@@ -154,7 +152,7 @@ export const UserSelectorScreen: React.FC<Props> = ({ navigation }) => {
         ))}
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('AdvancedUserSelectorScreen');
+            navigation.navigate('LoginScreen');
           }}
           style={[styles.userContainer, { borderBottomColor: border }]}
         >

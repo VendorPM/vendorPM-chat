@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  KeyboardTypeOptions,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { KeyboardCompatibleView, useTheme, version } from 'stream-chat-react-native';
 
@@ -53,6 +61,9 @@ type LabeledTextInputProps = {
   value: string;
   error?: boolean;
   label?: string;
+  secureTextEntry?: boolean;
+  inputStyle?: any;
+  keyboardType?: KeyboardTypeOptions;
 };
 
 export const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
@@ -60,6 +71,9 @@ export const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
   label = '',
   onChangeText,
   value,
+  secureTextEntry = false,
+  inputStyle = {},
+  keyboardType = 'default',
 }) => {
   const {
     theme: {
@@ -121,12 +135,15 @@ export const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
         placeholder={label}
         placeholderTextColor={grey}
         returnKeyType='next'
+        secureTextEntry={secureTextEntry}
+        keyboardType={keyboardType}
         style={[
           styles.input,
           {
             color: black,
             fontWeight: isEmpty ? '500' : 'normal',
-          }, // design team wanted placeholder fontWeight of 500
+          },
+          inputStyle,
         ]}
         value={value}
       />

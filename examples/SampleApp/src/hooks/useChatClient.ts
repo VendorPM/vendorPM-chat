@@ -158,7 +158,7 @@ export const useChatClient = () => {
     try {
       if (userId) {
         await loginUser({
-          apiKey: 'yjrt5yxw77ev',
+          apiKey: 'vuw97daxjzux',
           userId: USERS[userId].id,
           userImage: USERS[userId].image,
           userName: USERS[userId].name,

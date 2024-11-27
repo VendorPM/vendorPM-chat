@@ -6,7 +6,7 @@ const getChatStyle = (colorScheme: ColorSchemeName): DeepPartial<Theme> => ({
   colors:
     colorScheme === 'dark'
       ? {
-          accent_blue: '#005FFF',
+          accent_blue: '#0b64e0',
           accent_green: '#20E070',
           accent_red: '#FF3742',
           bg_gradient_end: '#101214',
@@ -15,8 +15,8 @@ const getChatStyle = (colorScheme: ColorSchemeName): DeepPartial<Theme> => ({
           black: '#FFFFFF',
           blue_alice: '#00193D',
           border: '#141924',
-          button_background: '#FFFFFF',
-          button_text: '#005FFF',
+          button_background: '#0b64e0',
+          button_text: '#FFFFFF',
           grey: '#7A7A7A',
           grey_gainsboro: '#2D2F2F',
           grey_whisper: '#1C1E22',
@@ -33,7 +33,7 @@ const getChatStyle = (colorScheme: ColorSchemeName): DeepPartial<Theme> => ({
           white_snow: '#070A0D',
         }
       : {
-          accent_blue: '#005FFF',
+          accent_blue: '#0b64e0',
           accent_green: '#20E070',
           accent_red: '#FF3742',
           bg_gradient_end: '#F7F7F7',
@@ -41,7 +41,7 @@ const getChatStyle = (colorScheme: ColorSchemeName): DeepPartial<Theme> => ({
           black: '#000000',
           blue_alice: '#E9F2FF',
           border: '#00000014', // 14 = 8% opacity; top: x=0, y=-1; bottom: x=0, y=1
-          button_background: '#005FFF',
+          button_background: '#0b64e0',
           button_text: '#FFFFFF',
           grey: '#7A7A7A',
           grey_gainsboro: '#DBDBDB',

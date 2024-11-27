@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { DevSettings, LogBox, Platform, useColorScheme } from 'react-native';
+import { DevSettings, LogBox, NativeModules, Platform, Text, useColorScheme } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -36,8 +36,14 @@ import { ThreadScreen } from './src/screens/ThreadScreen';
 import { UserSelectorScreen } from './src/screens/UserSelectorScreen';
 
 import type { StreamChat } from 'stream-chat';
+import { firebase } from './src/utils/firebase.util';
 
+firebase.initialize();
 if (__DEV__) {
+  // NativeModules.DevSettings.setIsDebuggingRemotely(true);
+  // global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest;
+  // global.FormData = global.originalFormData || global.FormData;
+
   DevSettings.addMenuItem('Reset local DB (offline storage)', () => {
     QuickSqliteClient.resetDB();
     console.info('Local DB reset');
@@ -52,6 +58,9 @@ import type {
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { navigateToChannel, RootNavigationRef } from './src/utils/RootNavigation';
 import FastImage from 'react-native-fast-image';
+import { LoginScreen } from './src/screens/LoginScreen';
+import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
+import OtpScreen from './src/screens/OtpScreen';
 
 LogBox.ignoreLogs(['Non-serializable values were found in the navigation state']);
 console.assert = () => null;
@@ -194,20 +203,44 @@ const DrawerNavigatorWrapper: React.FC<{
   );
 };
 
-const UserSelector = () => (
-  <UserSelectorStack.Navigator initialRouteName='UserSelectorScreen'>
-    <UserSelectorStack.Screen
-      component={AdvancedUserSelectorScreen}
-      name='AdvancedUserSelectorScreen'
-      options={{ gestureEnabled: false }}
-    />
-    <UserSelectorStack.Screen
-      component={UserSelectorScreen}
-      name='UserSelectorScreen'
-      options={{ gestureEnabled: false, headerShown: false }}
-    />
-  </UserSelectorStack.Navigator>
-);
+const UserSelector = () => {
+  return (
+    <UserSelectorStack.Navigator initialRouteName='Login'>
+      <UserSelectorStack.Screen
+        component={LoginScreen}
+        name='Login'
+        options={{
+          gestureEnabled: false,
+          headerShown: false,
+        }}
+      />
+      <UserSelectorStack.Screen
+        component={OtpScreen}
+        initialParams={{ email: '' }}
+        name='OtpScreen'
+        options={{
+          gestureEnabled: true,
+          headerShown: true,
+          headerTitle: 'VendorPM',
+        }}
+      />
+      <UserSelectorStack.Screen
+        component={ForgotPasswordScreen}
+        name='ForgotPasswordScreen'
+        options={{
+          gestureEnabled: true,
+          headerShown: true,
+          headerTitle: 'VendorPM',
+        }}
+      />
+      <UserSelectorStack.Screen
+        component={UserSelectorScreen}
+        name='UserSelectorScreen'
+        options={{ gestureEnabled: false, headerShown: false }}
+      />
+    </UserSelectorStack.Navigator>
+  );
+};
 
 // TODO: Split the stack into multiple stacks - ChannelStack, CreateChannelStack etc.
 const HomeScreen = () => {

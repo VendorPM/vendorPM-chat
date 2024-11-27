@@ -48,9 +48,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const baseFilters = {
-  type: 'messaging',
-};
 const sort: ChannelSort<StreamChatGenerics> = { last_updated: -1 };
 const options = {
   presence: true,
@@ -76,15 +73,6 @@ export const ChannelListScreen: React.FC = () => {
     usePaginatedSearchedMessages(searchQuery);
 
   const chatClientUserId = chatClient?.user?.id;
-  const filters = useMemo(
-    () => ({
-      ...baseFilters,
-      members: {
-        $in: [chatClientUserId],
-      },
-    }),
-    [chatClientUserId],
-  );
 
   useScrollToTop(scrollRef);
 
@@ -105,6 +93,13 @@ export const ChannelListScreen: React.FC = () => {
   if (!chatClient) {
     return null;
   }
+
+  const filters = {
+    // Hack to display searching state [, search]
+    members: { $in: [chatClientUserId] },
+    // members: { $in: [client.user.id] }
+    type: { $in: ['rfq_chat', 'pm_vendor', 'marketing', 'pitch'] },
+  };
 
   return (
     <View

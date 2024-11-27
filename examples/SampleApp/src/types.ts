@@ -71,7 +71,9 @@ export type StackNavigatorParamList = {
 };
 
 export type UserSelectorParamList = {
-  AdvancedUserSelectorScreen: undefined;
+  ForgotPasswordScreen: undefined;
+  Login: undefined;
+  OtpScreen: { email: string; onSuccess?: () => void };
   UserSelectorScreen: undefined;
 };
 

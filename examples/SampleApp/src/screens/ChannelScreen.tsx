@@ -168,7 +168,7 @@ export const ChannelScreen: React.FC<ChannelScreenProps> = ({
             });
           }}
         />
-        <MessageInput />
+        <MessageInput audioRecordingEnabled={false} />
       </Channel>
     </View>
   );
