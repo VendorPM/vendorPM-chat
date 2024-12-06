@@ -13,7 +13,6 @@ import { MicrosoftSignIn } from '../components/Login/MicrosoftSignIn';
 import { UserSelectorScreenNavigationProp } from './UserSelectorScreen';
 import CustomDivider from '../components/CustomDivider';
 import { fetcher } from '../api/fetcher';
-import { useAppContext } from '../context/AppContext';
 import { Authentication } from '../utils/auth.util';
 
 type LoginScreenProps = {
@@ -26,7 +25,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
 
   const { bottom } = useSafeAreaInsets();
   const {
@@ -76,12 +74,21 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     }
   };
 
+  const clearSessions = async () => {
+    try {
+      await fetcher.legacyApi.post<void>('/users/clear-sessions');
+    } catch (e: any) {
+      Alert.alert('Failed: clear sessions', e.message);
+    }
+  };
+
   const handleLogin = async () => {
     try {
       await Authentication.login({ email, password });
-      await fetcher.legacyApi.post<void>('/users/clear-sessions');
+      await clearSessions();
 
-      const { challenge } = await getTwoFactor();
+      const { challenge, headers } = await getTwoFactor();
+      console.log('headers', headers);
       if (challenge) {
         navigation.navigate('OtpScreen', { email, onSuccess: handleAuthenticationComplete });
       } else {
@@ -160,16 +167,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
               <View style={styles.forgotPasswordContainer}>
-                <View style={styles.checkboxContainer}>
-                  {/* <CheckBox
-                    value={rememberMe}
-                    onValueChange={(newValue) => {
-                      setRememberMe(newValue);
-                    }}
-                  /> */}
-                  <Text style={styles.checkboxLabel}>Remember me</Text>
-                </View>
-
                 <TouchableOpacity
                   onPress={() => navigation.navigate('ForgotPasswordScreen')}
                   style={styles.linkButton}
@@ -264,7 +261,7 @@ const styles = StyleSheet.create({
   },
   forgotPasswordContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     width: '100%',
   },

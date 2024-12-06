@@ -7,12 +7,8 @@ type LoginValue = {
   rememberMe?: boolean;
 };
 export class Authentication {
-  static login = ({ email, password, rememberMe }: LoginValue) => {
+  static login = ({ email, password }: LoginValue) => {
     AsyncStore.removeItem('email');
-
-    if (rememberMe) {
-      AsyncStore.setItem('email', email);
-    }
 
     return signInWithEmailAndPassword(getAuth(), email, password);
   };
@@ -23,7 +19,7 @@ export class Authentication {
     await AsyncStore.clear();
   };
 
-  static logout = async (resetAnalytics?: () => Promise<void> | undefined, redirect?: string) => {
+  static logout = async (resetAnalytics?: () => Promise<void> | undefined) => {
     try {
       await this.unauthenticate();
 
@@ -33,7 +29,7 @@ export class Authentication {
     } catch (err) {
       console.log('getAuth().signOut() ->', err);
     } finally {
-      console.log('getAuth().signOut() ->', err);
+      console.log('getAuth().signOut() ->');
     }
   };
 }

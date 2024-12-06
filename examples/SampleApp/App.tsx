@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
-import { DevSettings, LogBox, NativeModules, Platform, Text, useColorScheme } from 'react-native';
+import { DevSettings, LogBox, Platform, useColorScheme } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import 'react-native-devsettings/withAsyncStorage';
+
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Chat,
@@ -18,7 +20,6 @@ import { AppOverlayProvider } from './src/context/AppOverlayProvider';
 import { UserSearchProvider } from './src/context/UserSearchContext';
 import { useChatClient } from './src/hooks/useChatClient';
 import { useStreamChatTheme } from './src/hooks/useStreamChatTheme';
-import { AdvancedUserSelectorScreen } from './src/screens/AdvancedUserSelectorScreen';
 import { ChannelFilesScreen } from './src/screens/ChannelFilesScreen';
 import { ChannelImagesScreen } from './src/screens/ChannelImagesScreen';
 import { ChannelScreen } from './src/screens/ChannelScreen';
@@ -38,11 +39,8 @@ import { UserSelectorScreen } from './src/screens/UserSelectorScreen';
 import type { StreamChat } from 'stream-chat';
 import { firebase } from './src/utils/firebase.util';
 
-firebase.initialize();
 if (__DEV__) {
-  // NativeModules.DevSettings.setIsDebuggingRemotely(true);
   // global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest;
-  // global.FormData = global.originalFormData || global.FormData;
 
   DevSettings.addMenuItem('Reset local DB (offline storage)', () => {
     QuickSqliteClient.resetDB();
@@ -130,6 +128,14 @@ const App = () => {
       unsubscribeOnNotificationOpen();
       unsubscribeForegroundEvent();
     };
+  }, []);
+
+  useEffect(() => {
+    try {
+      firebase.initialize();
+    } catch (error) {
+      console.error('Failed to initialize Firebase:', error);
+    }
   }, []);
 
   return (

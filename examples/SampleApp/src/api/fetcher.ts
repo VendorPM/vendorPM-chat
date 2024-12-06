@@ -1,45 +1,25 @@
-import axios, { InternalAxiosRequestConfig, AxiosResponse } from 'axios';
-import auth from '@react-native-firebase/auth';
+import axios, { InternalAxiosRequestConfig } from 'axios';
 
 import { extractApiError } from '../utils/error.util';
 import { ApiError } from '../model';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { firebase } from '../utils/firebase.util';
 
-const COOKIE_KEY = 'connect.sid.development';
+// const COOKIE_KEY = 'connect.sid.development';
 
 const URI = {
-  // API: 'http://localhost:8080',
-  // LEGACY_API: 'http://localhost:8080/api',
+  API: 'http://localhost:8080',
+  LEGACY_API: 'http://localhost:8080/api',
 
-  API: 'http://dev.api.vendorpm.com',
-  LEGACY_API: 'http://dev.api.vendorpm.com/api',
+  // API: 'https://dev.api.vendorpm.com',
+  // LEGACY_API: 'https://dev.api.vendorpm.com/api',
 };
 
 // intercept and modify out going requests
 const requestInterceptor = async (config: InternalAxiosRequestConfig) => {
-  const currentUser = auth().currentUser;
-
-  if (currentUser) {
-    const token = await currentUser.getIdToken();
-    config.headers.set('authorization', token);
-  }
-
-  const storedCookie = await AsyncStorage.getItem('authCookie');
-  if (storedCookie) {
-    config.headers.Cookie = storedCookie;
-  }
+  const token = await firebase.getUserToken();
+  config.headers.set('authorization', token);
 
   return config;
-};
-
-// intercept and modify incoming response
-
-const responseInterceptor = async (response: AxiosResponse) => {
-  const cookieHeader = response.headers['set-cookie'];
-  if (cookieHeader?.includes(COOKIE_KEY)) {
-    await AsyncStorage.setItem('authCookie', cookieHeader.join('; '));
-  }
-  return response;
 };
 
 const responseErrorInterceptor = (error: ApiError) => {
@@ -66,10 +46,10 @@ const legacyApi = axios.create({
 });
 
 api.interceptors.request.use(requestInterceptor);
-api.interceptors.response.use(responseInterceptor, responseErrorInterceptor);
+api.interceptors.response.use(undefined, responseErrorInterceptor);
 
 legacyApi.interceptors.request.use(requestInterceptor);
-legacyApi.interceptors.response.use(responseInterceptor, responseErrorInterceptor);
+legacyApi.interceptors.response.use(undefined, responseErrorInterceptor);
 
 export const fetcher = {
   api,
