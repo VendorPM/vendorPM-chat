@@ -14,6 +14,8 @@ import { UserSelectorScreenNavigationProp } from './UserSelectorScreen';
 import CustomDivider from '../components/CustomDivider';
 import { fetcher } from '../api/fetcher';
 import { Authentication } from '../utils/auth.util';
+import { useChatClient } from '../hooks/useChatClient';
+import { useAppContext } from '../context/AppContext';
 
 type LoginScreenProps = {
   navigation: UserSelectorScreenNavigationProp;
@@ -25,6 +27,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const { loginUser } = useAppContext();
 
   const { bottom } = useSafeAreaInsets();
   const {
@@ -53,14 +57,23 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   };
 
   const handleAuthenticationComplete = async () => {
-    console.log('Login user');
-    // Login function to be added later.
-    // await loginUser({
-    //   apiKey,
-    //   userId,
-    //   userName,
-    //   userToken,
-    // });
+    try {
+      const {
+        data: { name, vendor_id },
+      } = await fetcher.legacyApi.get('/users/user');
+      const { data: vendorLogo } = await fetcher.legacyApi.get(`vendors/${vendor_id}/logo`);
+      const { data: streamChatToken } = await fetcher.legacyApi.get('/chat/token');
+
+      loginUser({
+        apiKey: 'vuw97daxjzux',
+        userId: streamChatToken.id,
+        userName: name,
+        userToken: streamChatToken.token,
+        userImage: vendorLogo.url,
+      });
+    } catch (e: any) {
+      Alert.alert('Failed: get user auth', e.message);
+    }
   };
 
   const getTwoFactor = async () => {
@@ -85,10 +98,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const handleLogin = async () => {
     try {
       await Authentication.login({ email, password });
+      // const hasAccount = await checkHasAccount();
+
+      // if (!hasAccount) {
+      //   return;
+      // }
+
       await clearSessions();
 
-      const { challenge, headers } = await getTwoFactor();
-      console.log('headers', headers);
+      const { challenge } = await getTwoFactor();
       if (challenge) {
         navigation.navigate('OtpScreen', { email, onSuccess: handleAuthenticationComplete });
       } else {

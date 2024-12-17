@@ -42,7 +42,7 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>Did you remember your password? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text style={styles.linkText}>Try logging in</Text>
         </TouchableOpacity>
       </View>

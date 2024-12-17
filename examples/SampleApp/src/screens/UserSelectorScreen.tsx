@@ -152,7 +152,7 @@ export const UserSelectorScreen: React.FC<Props> = ({ navigation }) => {
         ))}
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('LoginScreen');
+            navigation.navigate('Login');
           }}
           style={[styles.userContainer, { borderBottomColor: border }]}
         >
