@@ -7,11 +7,10 @@ import { firebase } from '../utils/firebase.util';
 // const COOKIE_KEY = 'connect.sid.development';
 
 const URI = {
-  API: 'http://localhost:8080',
-  LEGACY_API: 'http://localhost:8080/api',
-
-  // API: 'https://dev.api.vendorpm.com',
-  // LEGACY_API: 'https://dev.api.vendorpm.com/api',
+  // API: 'http://localhost:8080',
+  // LEGACY_API: 'http://localhost:8080/api',
+  API: 'https://dev.api.vendorpm.com',
+  LEGACY_API: 'https://dev.api.vendorpm.com/api',
 };
 
 // intercept and modify out going requests
