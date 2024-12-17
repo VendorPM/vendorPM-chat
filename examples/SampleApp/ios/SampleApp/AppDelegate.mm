@@ -5,11 +5,8 @@
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-- (BOOL)application:(UIApplication *)application openURL:(nonnull NSURL *)url options:(nonnull NSDictionary<NSString *,id> *)options {
-  return [[FBSDKApplicationDelegate sharedInstance] application:application openURL:url options:options] || [GIDSignIn.sharedInstance handleURL:url];
-}
-{
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
   [FIRApp configure];
   self.moduleName = @"SampleApp";
   // You can add your custom initial props in the dictionary below.
@@ -18,6 +15,11 @@
   
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
+
+- (BOOL)application:(UIApplication *)application openURL:(nonnull NSURL *)url options:(nonnull NSDictionary<NSString *,id> *)options {
+  return [GIDSignIn.sharedInstance handleURL:url];
+}
+
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
