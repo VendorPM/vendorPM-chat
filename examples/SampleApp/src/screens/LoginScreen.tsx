@@ -231,11 +231,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
     justifyContent: 'center',
+    alignSelf: 'center',
   },
   innerContainer: {
-    height: '100%',
+    flex: 1,
     alignItems: 'center',
     paddingHorizontal: 24,
     paddingVertical: 40,
