@@ -44,19 +44,16 @@ export const OTPScreen: React.FC<OTPScreenProps> = ({
 
   const handleContinue = async () => {
     const otpString = otp.join('');
-    // Handle OTP verification here
-    const { data: otpSuccess } = await fetcher.legacyApi.post<void>('/users/verify-otp', {
-      otp: otpString,
-      purpose: 'login',
-      onSuccess: () => onSuccess?.(),
-    });
 
-    console.log('===>', otpSuccess);
-
-    const { data: contacts } = await fetcher.legacyApi.get('/vendors/17796/contacts');
-
-    console.log('===>', contacts);
-    console.log('Verifying OTP:', otpString);
+    try {
+      await fetcher.legacyApi.post<void>('/users/verify-otp', {
+        otp: otpString,
+        purpose: 'login',
+        onSuccess: () => onSuccess?.(),
+      });
+    } catch (e) {
+      Alert.alert('Incorrect OTP');
+    }
   };
 
   const handleResend = () => {
