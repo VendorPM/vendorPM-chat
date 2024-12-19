@@ -14,7 +14,6 @@ import { UserSelectorScreenNavigationProp } from './UserSelectorScreen';
 import CustomDivider from '../components/CustomDivider';
 import { fetcher } from '../api/fetcher';
 import { Authentication } from '../utils/auth.util';
-import { useChatClient } from '../hooks/useChatClient';
 import { useAppContext } from '../context/AppContext';
 
 type LoginScreenProps = {
@@ -237,6 +236,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 24,
     paddingVertical: 40,
     gap: 24,
