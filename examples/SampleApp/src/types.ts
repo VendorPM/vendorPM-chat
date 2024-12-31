@@ -77,12 +77,6 @@ export type UserSelectorParamList = {
   UserSelectorScreen: undefined;
 };
 
-export type BottomTabNavigatorParamList = {
-  ChatScreen: undefined;
-  MentionsScreen: undefined;
-  ThreadsScreen: undefined;
-};
-
 export type AppTheme = Theme & {
   colors: {
     background: string;

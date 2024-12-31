@@ -195,9 +195,9 @@ export const SharedGroupsScreen: React.FC<SharedGroupsScreenProps> = ({
     <View style={styles.container}>
       <ScreenHeader titleText='Shared Groups' />
       <ChannelList
-        // filters={{
-        //   $and: [{ members: { $in: [chatClient?.user?.id] } }, { members: { $in: [user.id] } }],
-        // }}
+        filters={{
+          $and: [{ members: { $in: [chatClient?.user?.id] } }, { members: { $in: [user.id] } }],
+        }}
         filters={filters}
         List={ListComponent}
         options={{
