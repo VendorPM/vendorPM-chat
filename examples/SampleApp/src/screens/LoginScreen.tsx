@@ -58,9 +58,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const handleAuthenticationComplete = async () => {
     try {
       const {
+        data,
         data: { name, vendor_id },
       } = await fetcher.legacyApi.get('/users/user');
-      const { data: vendorLogo } = await fetcher.legacyApi.get(`vendors/${vendor_id}/logo`);
+
+      // const { data: vendorLogo } = await fetcher.legacyApi.get(`vendors/${vendor_id}/logo`);
       const { data: streamChatToken } = await fetcher.legacyApi.get('/chat/token');
 
       loginUser({
@@ -68,7 +70,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         userId: streamChatToken.id,
         userName: name,
         userToken: streamChatToken.token,
-        userImage: vendorLogo.url,
+        userImage: '',
       });
     } catch (e: any) {
       Alert.alert('Failed: get user auth', e.message);

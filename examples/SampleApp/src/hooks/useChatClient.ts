@@ -105,11 +105,11 @@ export const useChatClient = () => {
     if (isEnabled) {
       // Register FCM token with stream chat server.
       const token = await messaging().getToken();
-      await client.addDevice(token, 'firebase');
+      await client.addDevice(token, 'firebase', config.userId, 'chatNotification');
 
       // Listen to new FCM tokens and register them with stream chat server.
       const unsubscribeTokenRefresh = messaging().onTokenRefresh(async (newToken) => {
-        await client.addDevice(newToken, 'firebase');
+        await client.addDevice(newToken, 'firebase', config.userId, 'chatNotification');
       });
       // show notifications when on foreground
       const unsubscribeForegroundMessageReceive = messaging().onMessage(async (remoteMessage) => {
@@ -130,6 +130,7 @@ export const useChatClient = () => {
             ...rest,
             ...((stream as unknown as Record<string, string> | undefined) ?? {}), // extract and merge stream object if present
           };
+          console.log('===>', data);
           await notifee.displayNotification({
             android: {
               channelId,
