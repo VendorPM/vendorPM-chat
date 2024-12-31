@@ -138,6 +138,11 @@ export const useChatClient = () => {
                 id: 'default',
               },
             },
+            ios: {
+              // Add iOS configuration
+              sound: 'default', // Optional: specify a sound for the notification
+              // Additional iOS-specific options can be added here
+            },
             body: message.message.text,
             data,
             title: 'New message from ' + message.message.user.name,

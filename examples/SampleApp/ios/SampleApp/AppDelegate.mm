@@ -20,6 +20,11 @@
   return [GIDSignIn.sharedInstance handleURL:url];
 }
 
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    const unsigned *tokenBytes = (const unsigned *)[deviceToken bytes];
+    NSString *tokenString = [NSString stringWithFormat:@"%08x%08x%08x%08x", ntohl(tokenBytes[0]), ntohl(tokenBytes[1]), ntohl(tokenBytes[2]), ntohl(tokenBytes[3])];
+}
+
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
