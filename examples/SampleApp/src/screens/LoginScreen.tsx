@@ -14,6 +14,7 @@ import CustomDivider from '../components/CustomDivider';
 import { fetcher } from '../api/fetcher';
 import { Authentication } from '../utils/auth.util';
 import { useAppContext } from '../context/AppContext';
+import { getS3Link } from '../utils/s3.util';
 
 type LoginScreenProps = {
   navigation: UserSelectorScreenNavigationProp;
@@ -57,11 +58,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const handleAuthenticationComplete = async () => {
     try {
       const {
-        data,
-        data: { name, vendor_id },
+        data: { name, profile_pic },
       } = await fetcher.legacyApi.get('/users/user');
 
-      // const { data: vendorLogo } = await fetcher.legacyApi.get(`vendors/${vendor_id}/logo`);
+      const profilePicUrl = profile_pic ? getS3Link(profile_pic) : undefined;
       const { data: streamChatToken } = await fetcher.legacyApi.get('/chat/token');
 
       loginUser({
@@ -69,7 +69,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         userId: streamChatToken.id,
         userName: name,
         userToken: streamChatToken.token,
-        userImage: '',
+        userImage: profilePicUrl,
       });
     } catch (e: any) {
       Alert.alert('Failed: get user auth', e.message);
