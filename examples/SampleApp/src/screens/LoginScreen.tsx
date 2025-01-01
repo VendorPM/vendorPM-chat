@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Eye, EyeOff } from 'react-native-feather';
 import { KeyboardCompatibleView, useTheme } from 'stream-chat-react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
@@ -26,6 +26,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const { loginUser } = useAppContext();
 
@@ -56,6 +58,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   };
 
   const handleAuthenticationComplete = async () => {
+    setIsLoading(true);
     try {
       const {
         data: { name, profile_pic },
@@ -73,6 +76,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       });
     } catch (e: any) {
       Alert.alert('Failed: get user auth', e.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -87,6 +92,18 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     }
   };
 
+  const checkHasAccount = async () => {
+    console.log('===> here');
+    const userExists = await fetcher.legacyApi.get('/users/has-account');
+
+    if (!userExists) {
+      await Authentication.unauthenticate();
+      return Alert.alert('Error', 'Email not found');
+    }
+
+    return userExists;
+  };
+
   const clearSessions = async () => {
     try {
       await fetcher.legacyApi.post<void>('/users/clear-sessions');
@@ -96,13 +113,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   };
 
   const handleLogin = async () => {
+    setIsLoading(true);
     try {
       await Authentication.login({ email, password });
-      // const hasAccount = await checkHasAccount();
+      const hasAccount = await checkHasAccount();
 
-      // if (!hasAccount) {
-      //   return;
-      // }
+      if (!hasAccount) {
+        setIsLoading(false);
+        return;
+      }
 
       await clearSessions();
 
@@ -112,10 +131,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       } else {
         await handleAuthenticationComplete();
       }
-      // Success! The auth state change will be handled by your app's main auth listener
-    } catch (error: any) {
-      // Handle specific error cases
-      switch (error.code) {
+    } catch (err: any) {
+      switch (err.code) {
         case 'auth/email-already-in-use':
           Alert.alert('Error', 'That email address is already in use.');
           break;
@@ -130,8 +147,9 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           break;
         default:
           Alert.alert('Error', 'Failed to sign in. Please try again.');
-          console.error(error);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -218,13 +236,14 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                     backgroundColor: button_background,
                   },
                 ]}
+                disabled={isLoading}
               >
                 <Text
                   style={{
                     color: button_text,
                   }}
                 >
-                  Sign in
+                  {isLoading ? <ActivityIndicator size='small' color={button_text} /> : 'Sign in'}
                 </Text>
               </TouchableOpacity>
             </View>
