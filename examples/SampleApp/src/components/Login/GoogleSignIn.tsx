@@ -1,43 +1,38 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { GoogleSignin, SignInSuccessResponse } from '@react-native-google-signin/google-signin';
 import GoogleLogo from '../../images/GoogleLogo';
 
-export const GoogleSignIn: React.FC = () => {
+type GoogleBtnProps = {
+  buttonText?: string;
+  onClick: () => void;
+  onSignOut?: () => void;
+  signOut?: boolean;
+};
+
+export const GoogleSignIn = ({ onClick }: GoogleBtnProps) => {
   async function onGoogleButtonPress() {
-    try {
-      // Check if your device supports Google Play
-      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-      // Get the users ID token
-      const signInResult = await GoogleSignin.signIn();
-      console.log('signInResult', GoogleSignin.signIn());
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    const signInResult = (await GoogleSignin.signIn()) as SignInSuccessResponse;
 
-      let idToken: string | null | undefined;
-      // Try the new style of google-sign in result, from v13+ of that module
-      idToken = signInResult.data?.idToken;
-      if (!idToken) {
-        // if you are using older versions of google-signin, try old style result
-        idToken = signInResult.data?.idToken;
-      }
-      if (!idToken) {
-        throw new Error('No ID token found');
-      }
+    let idToken: string | undefined = (signInResult as any).idToken || signInResult.data?.idToken;
 
-      // Create a Google credential with the token
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-      // Sign-in the user with the credential
-      return auth().signInWithCredential(googleCredential);
-    } catch (error) {
-      console.log('error', error);
+    if (!idToken) {
+      throw new Error('No ID token found');
     }
+
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+    const userCredential = await auth().signInWithCredential(googleCredential);
+
+    return userCredential;
   }
 
   return (
     <TouchableOpacity
       style={styles.button}
-      onPress={() => onGoogleButtonPress().then(() => console.log('Signed in with Google!'))}
+      onPress={() => onGoogleButtonPress().then(() => onClick())}
     >
       <View style={styles.iconContainer}>
         <GoogleLogo />

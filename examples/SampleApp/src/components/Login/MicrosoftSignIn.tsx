@@ -3,28 +3,23 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import MicrosoftLogo from '../../images/MirosoftLogo';
 
-export const MicrosoftSignIn: React.FC = () => {
-  const onMicrosoftButtonPress = async () => {
-    // Generate the provider object
-    const provider = new auth.OAuthProvider('microsoft.com');
-    // Optionally add scopes
-    // provider.addScope('offline_access');
-    // // Optionally add custom parameters
-    // provider.setCustomParameters({
-    //   prompt: 'consent',
-    //   // Optional "tenant" parameter for optional use of Azure AD tenant.
-    //   // e.g., specific ID - 9aaa9999-9999-999a-a9aa-9999aa9aa99a or domain - example.com
-    //   // defaults to "common" for tenant-independent tokens.
-    //   tenant: 'tenant_name_or_id',
-    // });
+type MicrosoftBtnProps = {
+  buttonText?: string;
+  onClick: () => void;
+  onSignOut?: () => void;
+  signOut?: boolean;
+};
 
-    // Sign-in the user with the provider
+export const MicrosoftSignIn = ({ onClick }: MicrosoftBtnProps) => {
+  const onMicrosoftButtonPress = async () => {
+    const provider = new auth.OAuthProvider('microsoft.com');
+
     return auth().signInWithRedirect(provider);
   };
   return (
     <TouchableOpacity
       style={styles.button}
-      onPress={() => onMicrosoftButtonPress().then(() => console.log('Signed in with Microsoft!'))}
+      onPress={() => onMicrosoftButtonPress().then(() => onClick())}
     >
       <View style={styles.iconContainer}>
         <MicrosoftLogo />

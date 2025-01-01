@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Eye, EyeOff } from 'react-native-feather';
 import { KeyboardCompatibleView, useTheme } from 'stream-chat-react-native';
-
-// import CheckBox from '@react-native-community/checkbox';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { LabeledTextInput } from './AdvancedUserSelectorScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -136,6 +135,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     }
   };
 
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: '525818996174-6g0os9h9d51b0fjgqdomaf658285b329.apps.googleusercontent.com',
+    });
+  }, []);
+
   return (
     <KeyboardCompatibleView keyboardVerticalOffset={0}>
       <View
@@ -152,8 +157,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           <View style={styles.wrapper}>
             <Text style={styles.headerText}>Sign in to VendorPM</Text>
             <View style={styles.buttonContainer}>
-              <GoogleSignIn />
-              <MicrosoftSignIn />
+              <GoogleSignIn onClick={handleAuthenticationComplete} />
+              <MicrosoftSignIn onClick={handleAuthenticationComplete} />
               <CustomDivider />
             </View>
             <View style={styles.formContainer}>

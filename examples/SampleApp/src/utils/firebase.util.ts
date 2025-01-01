@@ -1,4 +1,4 @@
-import { getAuth } from 'firebase/auth';
+import { getAuth } from '@react-native-firebase/auth';
 import { initializeApp } from 'firebase/app';
 
 export const FIREBASE_CONFIG = {
