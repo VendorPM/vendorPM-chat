@@ -6805,6 +6805,11 @@ react-native-markdown-package@1.8.2:
     react-native-lightbox "^0.7.0"
     simple-markdown "^0.7.1"
 
+react-native-otp-entry@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/react-native-otp-entry/-/react-native-otp-entry-1.8.2.tgz#f6ea8d05db7cdf0162901d237019f5c03e5ad19c"
+  integrity sha512-Ergs1fNpyp69oSrQ3k/PoolBpuutXruwhQDnEmX4xT3RnaZyo9lvcRsj2FafHanbFvghn/v3WcFRGU/GIhIMqQ==
+
 react-native-quick-sqlite@8.0.2:
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/react-native-quick-sqlite/-/react-native-quick-sqlite-8.0.2.tgz#67ad0a330ede647f9cd02c83115810722d5bd828"

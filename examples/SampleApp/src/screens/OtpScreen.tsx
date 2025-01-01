@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AlertCircle } from 'react-native-feather';
 import type { RouteProp } from '@react-navigation/native';
+import { OtpInput } from 'react-native-otp-entry';
 
 import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
@@ -25,35 +25,16 @@ export const OTPScreen: React.FC<OTPScreenProps> = ({
     params: { email, onSuccess },
   },
 }) => {
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [otp, setOtp] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [customError, setCustomError] = useState<null | string>(null);
 
-  const inputRefs = useRef<TextInput[]>([]);
-
-  const handleOtpChange = (value: string, index: number) => {
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
-
-  const handleKeyPress = (e: any, index: number) => {
-    if (e.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
-  };
-
   const handleContinue = async () => {
     setIsLoading(true);
-    const otpString = otp.join('');
 
     try {
       await fetcher.legacyApi.post<void>('/users/verify-otp', {
-        otp: otpString,
+        otp: otp,
         purpose: 'login',
       });
       onSuccess?.();
@@ -71,7 +52,7 @@ export const OTPScreen: React.FC<OTPScreenProps> = ({
         email,
         purpose: 'login',
       });
-      setOtp(['', '', '', '', '', '']);
+      setOtp('');
       setCustomError(null);
       Alert.alert('New code sent to email');
     } catch (e: any) {
@@ -130,24 +111,13 @@ export const OTPScreen: React.FC<OTPScreenProps> = ({
       </Text>
 
       <View style={styles.otpContainer}>
-        {otp.map((digit, index) => (
-          <TextInput
-            key={index}
-            ref={(ref) => (inputRefs.current[index] = ref as TextInput)}
-            style={styles.otpInput}
-            maxLength={1}
-            keyboardType='number-pad'
-            value={digit}
-            onChangeText={(value) => handleOtpChange(value, index)}
-            onKeyPress={(e) => handleKeyPress(e, index)}
-          />
-        ))}
+        <OtpInput focusColor='#007AFF' numberOfDigits={6} onTextChange={(text) => setOtp(text)} />
       </View>
 
       <TouchableOpacity
-        style={[styles.continueButton, !otp.every(Boolean) && styles.disabledButton]}
+        style={[styles.continueButton, otp.length < 6 && styles.disabledButton]}
         onPress={handleContinue}
-        disabled={!otp.every(Boolean)}
+        disabled={otp.length < 6}
       >
         <Text style={styles.buttonText}>
           {isLoading ? <ActivityIndicator size='small' color='white' /> : 'Continue'}
@@ -198,16 +168,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 32,
     gap: 16,
-  },
-  otpInput: {
-    flexGrow: 1,
-    height: 45,
-    width: 'auto',
-    borderWidth: 1,
-    borderRadius: 8,
-    textAlign: 'center',
-    fontSize: 20,
-    borderColor: '#ccc',
   },
   continueButton: {
     backgroundColor: '#007AFF',
