@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { AlertCircle } from 'react-native-feather';
 import type { RouteProp } from '@react-navigation/native';
 
 import {
@@ -10,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { fetcher } from '../api/fetcher';
 import { UserSelectorParamList } from '../types';
@@ -24,6 +26,9 @@ export const OTPScreen: React.FC<OTPScreenProps> = ({
   },
 }) => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [isLoading, setIsLoading] = useState(false);
+  const [customError, setCustomError] = useState<null | string>(null);
+
   const inputRefs = useRef<TextInput[]>([]);
 
   const handleOtpChange = (value: string, index: number) => {
@@ -43,22 +48,59 @@ export const OTPScreen: React.FC<OTPScreenProps> = ({
   };
 
   const handleContinue = async () => {
+    setIsLoading(true);
     const otpString = otp.join('');
 
     try {
       await fetcher.legacyApi.post<void>('/users/verify-otp', {
         otp: otpString,
         purpose: 'login',
-        onSuccess: () => onSuccess?.(),
       });
-    } catch (e) {
-      Alert.alert('Incorrect OTP');
+      onSuccess?.();
+    } catch (e: any) {
+      setCustomError(e.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleResend = () => {
+  const handleResend = async () => {
     // Handle resend logic here
+    try {
+      await fetcher.legacyApi.post<void>('/users/send-otp', {
+        email,
+        purpose: 'login',
+      });
+      setOtp(['', '', '', '', '', '']);
+      setCustomError(null);
+      Alert.alert('New code sent to email');
+    } catch (e: any) {
+      setCustomError(e.message);
+    }
+
     console.log('Resending OTP');
+  };
+
+  const getErrorText = () => {
+    console.log(customError);
+    switch (customError) {
+      case 'ERROR.EXPIRED_CODE':
+        return 'This code has expired.';
+      case 'ERROR.INTERNAL_SERVER_ERROR':
+        return 'There was an error submitting your information. Please try again later';
+      case 'ERROR.INVALID_CODE':
+        return 'Incorrect code, please try again.';
+      case 'ERROR.INVALID_SESSION':
+        return 'Invalid session.';
+      case 'ERROR.NEXT_CODE_REQUEST_PREVENTED_UNTIL':
+        return 'Please wait 1 minute before sending another code.';
+      case 'ERROR.SENDING_OTP':
+        return 'There was an error submitting your information. Please resend code or try again later.';
+      case 'ERROR.TOO_MANY_REQUESTS':
+        return 'Too many requests, please wait before trying again.';
+      default:
+        return 'Failed to sign in. Please try again.';
+    }
   };
 
   useEffect(() => {
@@ -69,7 +111,7 @@ export const OTPScreen: React.FC<OTPScreenProps> = ({
           purpose: 'login',
         });
       } catch (e: any) {
-        Alert.alert(e.message);
+        setCustomError(e.message);
       }
     };
     sendInitialOtp();
@@ -107,12 +149,20 @@ export const OTPScreen: React.FC<OTPScreenProps> = ({
         onPress={handleContinue}
         disabled={!otp.every(Boolean)}
       >
-        <Text style={styles.buttonText}>Continue</Text>
+        <Text style={styles.buttonText}>
+          {isLoading ? <ActivityIndicator size='small' color='white' /> : 'Continue'}
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.resendButton} onPress={handleResend}>
         <Text style={styles.resendText}>Resend Code</Text>
       </TouchableOpacity>
+      {customError !== null && (
+        <View style={styles.errorContainer}>
+          <AlertCircle height={24} width={24} color='#ce2c2c' style={styles.errorIcon} />
+          <Text style={styles.errorMessage}>{getErrorText()}</Text>
+        </View>
+      )}
     </KeyboardAvoidingView>
   );
 };
@@ -182,6 +232,23 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontSize: 14,
     fontWeight: '500',
+  },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fdf7f7', // Light red background
+    borderColor: '#f8d3d3',
+    borderLeftWidth: 4,
+    borderLeftColor: '#ce2c2c', // Dark red border
+    padding: 10,
+    borderRadius: 4,
+  },
+  errorIcon: {
+    marginRight: 10,
+  },
+  errorMessage: {
+    flex: 1,
+    fontSize: 14,
   },
 });
 

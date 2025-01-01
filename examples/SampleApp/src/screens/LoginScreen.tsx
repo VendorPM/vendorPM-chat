@@ -60,6 +60,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const handleAuthenticationComplete = async () => {
     setIsLoading(true);
     try {
+      console.log('hereee');
       const {
         data: { name, profile_pic },
       } = await fetcher.legacyApi.get('/users/user');
@@ -83,9 +84,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
   const getTwoFactor = async () => {
     try {
-      const { data: challenge, headers } = await fetcher.legacyApi.get('/users/two-factor-auth');
-
-      console.log('headers', headers);
+      const { data: challenge } = await fetcher.legacyApi.get('/users/two-factor-auth');
       return challenge;
     } catch (e: any) {
       Alert.alert('Failed: get two factor auth', e.message);
@@ -93,7 +92,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   };
 
   const checkHasAccount = async () => {
-    console.log('===> here');
     const userExists = await fetcher.legacyApi.get('/users/has-account');
 
     if (!userExists) {
