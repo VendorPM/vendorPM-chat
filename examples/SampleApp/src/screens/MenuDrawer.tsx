@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Edit, Group, User, useTheme } from 'stream-chat-react-native';
+import { User, useTheme } from 'stream-chat-react-native';
 
 import { useAppContext } from '../context/AppContext';
 
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     marginTop: 16,
   },
   menuItem: {
@@ -77,40 +77,6 @@ export const MenuDrawer = ({ navigation }: DrawerContentComponentProps) => {
         </Text>
       </View>
       <View style={styles.menuContainer}>
-        <View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('NewDirectMessagingScreen')}
-            style={styles.menuItem}
-          >
-            <Edit height={24} pathFill={grey} width={24} />
-            <Text
-              style={[
-                styles.menuTitle,
-                {
-                  color: black,
-                },
-              ]}
-            >
-              New Direct Messages
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('NewGroupChannelAddMemberScreen')}
-            style={styles.menuItem}
-          >
-            <Group height={24} pathFill={grey} width={24} />
-            <Text
-              style={[
-                styles.menuTitle,
-                {
-                  color: black,
-                },
-              ]}
-            >
-              New Group
-            </Text>
-          </TouchableOpacity>
-        </View>
         <TouchableOpacity
           onPress={() => {
             logout();
