@@ -1,18 +1,12 @@
 import React, { useEffect } from 'react';
-import { DevSettings, LogBox, Platform, useColorScheme } from 'react-native';
+import { LogBox, Platform, useColorScheme } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-devsettings/withAsyncStorage';
 
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-  Chat,
-  OverlayProvider,
-  QuickSqliteClient,
-  ThemeProvider,
-  useOverlayContext,
-} from 'stream-chat-react-native';
+import { Chat, OverlayProvider, ThemeProvider, useOverlayContext } from 'stream-chat-react-native';
 import messaging from '@react-native-firebase/messaging';
 import notifee, { EventType } from '@notifee/react-native';
 import { AppContext } from './src/context/AppContext';
@@ -41,11 +35,6 @@ import { firebase } from './src/utils/firebase.util';
 
 if (__DEV__) {
   // global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest;
-
-  DevSettings.addMenuItem('Reset local DB (offline storage)', () => {
-    QuickSqliteClient.resetDB();
-    console.info('Local DB reset');
-  });
 }
 
 import type {
@@ -65,13 +54,15 @@ console.assert = () => null;
 
 // when a channel id is set here, the intial route is the channel screen
 const initialChannelIdGlobalRef = { current: '' };
+const initialChannelTypeGlobalRef = { current: '' };
 
 notifee.onBackgroundEvent(async ({ detail, type }) => {
   // user press on notification detected while app was on background on Android
   if (type === EventType.PRESS) {
     const channelId = detail.notification?.data?.channel_id as string;
+    const channelType = detail.notification?.data?.channel_type as string;
     if (channelId) {
-      navigateToChannel(channelId);
+      navigateToChannel(channelId, channelType);
     }
     await Promise.resolve();
   }
@@ -89,8 +80,9 @@ const App = () => {
     const unsubscribeOnNotificationOpen = messaging().onNotificationOpenedApp((remoteMessage) => {
       // Notification caused app to open from background state on iOS
       const channelId = remoteMessage.data?.channel_id as string;
+      const channelType = remoteMessage.data?.channel_type as string;
       if (channelId) {
-        navigateToChannel(channelId);
+        navigateToChannel(channelId, channelType);
       }
     });
     // handle notification clicks on foreground
@@ -98,8 +90,9 @@ const App = () => {
       if (type === EventType.PRESS) {
         // user has pressed the foreground notification
         const channelId = detail.notification?.data?.channel_id as string;
+        const channelType = detail.notification?.data?.channel_type as string;
         if (channelId) {
-          navigateToChannel(channelId);
+          navigateToChannel(channelId, channelType);
         }
       }
     });
@@ -107,8 +100,10 @@ const App = () => {
       if (initialNotification) {
         // Notification caused app to open from quit state on Android
         const channelId = initialNotification.notification.data?.channel_id as string;
+        const channelType = initialNotification.notification.data?.channel_type as string;
         if (channelId) {
           initialChannelIdGlobalRef.current = channelId;
+          initialChannelTypeGlobalRef.current = channelType;
         }
       }
     });
@@ -118,9 +113,11 @@ const App = () => {
         if (remoteMessage) {
           // Notification caused app to open from quit state on iOS
           const channelId = remoteMessage.data?.channel_id as string;
+          const channelType = remoteMessage.data?.channel_type as string;
           if (channelId) {
             // this will make the app to start with the channel screen with this channel id
             initialChannelIdGlobalRef.current = channelId;
+            initialChannelTypeGlobalRef.current = channelType;
           }
         }
       });

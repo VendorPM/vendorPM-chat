@@ -102,7 +102,7 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = ({ channel }) => {
 // Either provide channel or channelId.
 export const ChannelScreen: React.FC<ChannelScreenProps> = ({
   route: {
-    params: { channel: channelFromProp, channelId, messageId },
+    params: { channel: channelFromProp, channelId, messageId, channelType },
   },
 }) => {
   const { chatClient } = useAppContext();
@@ -123,11 +123,11 @@ export const ChannelScreen: React.FC<ChannelScreenProps> = ({
 
   useEffect(() => {
     const initChannel = async () => {
-      if (!chatClient || !channelId) {
+      if (!chatClient || !channelId || !channelType) {
         return;
       }
 
-      const newChannel = chatClient?.channel('messaging', channelId);
+      const newChannel = chatClient?.channel(channelType, channelId);
       if (!newChannel?.initialized) {
         await newChannel?.watch();
       }
@@ -135,7 +135,7 @@ export const ChannelScreen: React.FC<ChannelScreenProps> = ({
     };
 
     initChannel();
-  }, [channelId, chatClient]);
+  }, [channelId, chatClient, channelType]);
 
   useFocusEffect(() => {
     setSelectedThread(undefined);

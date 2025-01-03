@@ -50,6 +50,7 @@ export type StackNavigatorParamList = {
     channel?: Channel<StreamChatGenerics>;
     channelId?: string;
     messageId?: string;
+    channelType?: string;
   };
   GroupChannelDetailsScreen: {
     channel: Channel<StreamChatGenerics>;

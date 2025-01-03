@@ -4,7 +4,7 @@ import { StackNavigatorParamList } from '../types';
 
 export const RootNavigationRef = React.createRef<NavigationContainerRef>();
 
-export const navigateToChannel = (channelId: string | null | undefined) => {
+export const navigateToChannel = (channelId: string | null | undefined, channelType?: string) => {
   if (!channelId || !RootNavigationRef.current) {
     return;
   }
@@ -22,14 +22,18 @@ export const navigateToChannel = (channelId: string | null | undefined) => {
         } else {
           // replace existing channel screen with a new one
           routes.pop();
-          routes.push({ key: `${Date.now()}`, name: 'ChannelScreen', params: { channelId } });
+          routes.push({
+            key: `${Date.now()}`,
+            name: 'ChannelScreen',
+            params: { channelId, channelType },
+          });
         }
       } else {
         // navigate to channel screen
         return CommonActions.navigate({
           key: `${Date.now()}`,
           name: 'ChannelScreen',
-          params: { channelId },
+          params: { channelId, channelType },
         });
       }
     }
