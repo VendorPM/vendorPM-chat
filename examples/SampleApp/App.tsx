@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { LogBox, Platform, useColorScheme } from 'react-native';
+import { LogBox, Platform, useColorScheme, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -28,7 +28,6 @@ import { NewGroupChannelAssignNameScreen } from './src/screens/NewGroupChannelAs
 import { OneOnOneChannelDetailScreen } from './src/screens/OneOnOneChannelDetailScreen';
 import { SharedGroupsScreen } from './src/screens/SharedGroupsScreen';
 import { ThreadScreen } from './src/screens/ThreadScreen';
-import { UserSelectorScreen } from './src/screens/UserSelectorScreen';
 
 import type { StreamChat } from 'stream-chat';
 import { firebase } from './src/utils/firebase.util';
@@ -223,8 +222,9 @@ const UserSelector = () => {
         name='OtpScreen'
         options={{
           gestureEnabled: true,
-          headerShown: true,
+          headerBackground: () => <View style={{ backgroundColor: 'white' }} />,
           headerTitle: 'VendorPM',
+          headerTitleStyle: { color: 'black' },
         }}
       />
       <UserSelectorStack.Screen
@@ -232,14 +232,10 @@ const UserSelector = () => {
         name='ForgotPasswordScreen'
         options={{
           gestureEnabled: true,
-          headerShown: true,
+          headerBackground: () => <View style={{ backgroundColor: 'white' }} />,
           headerTitle: 'VendorPM',
+          headerTitleStyle: { color: 'black' },
         }}
-      />
-      <UserSelectorStack.Screen
-        component={UserSelectorScreen}
-        name='UserSelectorScreen'
-        options={{ gestureEnabled: false, headerShown: false }}
       />
     </UserSelectorStack.Navigator>
   );

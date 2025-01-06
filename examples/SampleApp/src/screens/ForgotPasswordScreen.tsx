@@ -9,11 +9,13 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
-import { UserSelectorScreenNavigationProp } from './UserSelectorScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { KeyboardCompatibleView, useTheme } from 'stream-chat-react-native';
+import { useTheme } from 'stream-chat-react-native';
 import { fetcher } from '../api/fetcher';
+import { UserSelectorScreenNavigationProp } from './LoginScreen';
 
 type ForgotPasswordScreenProps = {
   navigation: UserSelectorScreenNavigationProp;
@@ -59,7 +61,7 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
   };
 
   return (
-    <KeyboardCompatibleView keyboardVerticalOffset={0}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View
         style={[
           styles.container,
@@ -120,7 +122,7 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
           )}
         </View>
       </View>
-    </KeyboardCompatibleView>
+    </KeyboardAvoidingView>
   );
 };
 

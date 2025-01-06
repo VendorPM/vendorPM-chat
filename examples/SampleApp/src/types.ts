@@ -75,7 +75,6 @@ export type UserSelectorParamList = {
   ForgotPasswordScreen: undefined;
   Login: undefined;
   OtpScreen: { email: string; onSuccess?: () => void };
-  UserSelectorScreen: undefined;
 };
 
 export type AppTheme = Theme & {

@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Platform,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Eye, EyeOff } from 'react-native-feather';
-import { KeyboardCompatibleView, useTheme } from 'stream-chat-react-native';
+import { useTheme } from 'stream-chat-react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { LabeledTextInput } from './AdvancedUserSelectorScreen';
@@ -9,12 +18,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VendorPmLogo } from '../images/VendorPmLogo';
 import { GoogleSignIn } from '../components/Login/GoogleSignIn';
 import { MicrosoftSignIn } from '../components/Login/MicrosoftSignIn';
-import { UserSelectorScreenNavigationProp } from './UserSelectorScreen';
 import CustomDivider from '../components/CustomDivider';
 import { fetcher } from '../api/fetcher';
 import { Authentication } from '../utils/auth.util';
 import { useAppContext } from '../context/AppContext';
 import { getS3Link } from '../utils/s3.util';
+import { UserSelectorParamList } from '../types';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+export type UserSelectorScreenNavigationProp = StackNavigationProp<UserSelectorParamList, 'Login'>;
 
 type LoginScreenProps = {
   navigation: UserSelectorScreenNavigationProp;
@@ -60,7 +72,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const handleAuthenticationComplete = async () => {
     setIsLoading(true);
     try {
-      console.log('hereee');
       const {
         data: { name, profile_pic },
       } = await fetcher.legacyApi.get('/users/user');
@@ -158,7 +169,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   }, []);
 
   return (
-    <KeyboardCompatibleView keyboardVerticalOffset={0}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View
         style={[
           styles.container,
@@ -248,7 +259,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           </View>
         </View>
       </View>
-    </KeyboardCompatibleView>
+    </KeyboardAvoidingView>
   );
 };
 
