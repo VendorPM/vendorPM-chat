@@ -258,7 +258,10 @@ const HomeScreen = () => {
         component={ChannelScreen}
         initialParams={
           initialChannelIdGlobalRef.current
-            ? { channelId: initialChannelIdGlobalRef.current }
+            ? {
+                channelId: initialChannelIdGlobalRef.current,
+                channelType: initialChannelTypeGlobalRef.current,
+              }
             : undefined
         }
         name='ChannelScreen'

@@ -40,8 +40,7 @@ type UnreadCountBadgeProps = {
   unreadCount: number | undefined;
 };
 
-const UnreadCountBadge: React.FC<UnreadCountBadgeProps> = (props) => {
-  const { unreadCount } = props;
+const UnreadCountBadge: React.FC<UnreadCountBadgeProps> = ({ unreadCount }) => {
   const {
     theme: {
       colors: { accent_red },
