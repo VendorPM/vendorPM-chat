@@ -193,6 +193,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                 error={emailError}
                 label='Email Address*'
                 onChangeText={(text) => {
+                  setEmailError(false);
                   setEmail(text);
                 }}
                 value={email}
@@ -203,6 +204,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                   error={passwordError}
                   label='Password*'
                   onChangeText={(text) => {
+                    setPasswordError(false);
                     setPassword(text);
                   }}
                   secureTextEntry={!isPasswordVisible}

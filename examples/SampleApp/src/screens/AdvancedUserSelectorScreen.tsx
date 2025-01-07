@@ -64,6 +64,7 @@ type LabeledTextInputProps = {
   secureTextEntry?: boolean;
   inputStyle?: any;
   keyboardType?: KeyboardTypeOptions;
+  textContentType?: any;
 };
 
 export const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
@@ -74,6 +75,7 @@ export const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
   secureTextEntry = false,
   inputStyle = {},
   keyboardType = 'default',
+  textContentType = 'oneTimeCode',
 }) => {
   const {
     theme: {
@@ -137,6 +139,7 @@ export const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
         returnKeyType='next'
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}
+        textContentType={textContentType}
         style={[
           styles.input,
           {

@@ -1,12 +1,18 @@
 import React, { useEffect } from 'react';
-import { LogBox, Platform, useColorScheme, View } from 'react-native';
+import { DevSettings, LogBox, Platform, useColorScheme, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-devsettings/withAsyncStorage';
 
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Chat, OverlayProvider, ThemeProvider, useOverlayContext } from 'stream-chat-react-native';
+import {
+  Chat,
+  OverlayProvider,
+  QuickSqliteClient,
+  ThemeProvider,
+  useOverlayContext,
+} from 'stream-chat-react-native';
 import messaging from '@react-native-firebase/messaging';
 import notifee, { EventType } from '@notifee/react-native';
 import { AppContext } from './src/context/AppContext';
@@ -33,7 +39,10 @@ import type { StreamChat } from 'stream-chat';
 import { firebase } from './src/utils/firebase.util';
 
 if (__DEV__) {
-  // global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest;
+  DevSettings.addMenuItem('Reset local DB (offline storage)', () => {
+    QuickSqliteClient.resetDB();
+    console.info('Local DB reset');
+  });
 }
 
 import type {
