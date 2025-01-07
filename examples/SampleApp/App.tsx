@@ -70,6 +70,7 @@ notifee.onBackgroundEvent(async ({ detail, type }) => {
     const channelId = detail.notification?.data?.channel_id as string;
     const channelType = detail.notification?.data?.channel_type as string;
     if (channelId) {
+      await notifee.decrementBadgeCount();
       navigateToChannel(channelId, channelType);
     }
     await Promise.resolve();
@@ -85,21 +86,25 @@ const App = () => {
   const streamChatTheme = useStreamChatTheme();
 
   useEffect(() => {
-    const unsubscribeOnNotificationOpen = messaging().onNotificationOpenedApp((remoteMessage) => {
-      // Notification caused app to open from background state on iOS
-      const channelId = remoteMessage.data?.channel_id as string;
-      const channelType = remoteMessage.data?.channel_type as string;
-      if (channelId) {
-        navigateToChannel(channelId, channelType);
-      }
-    });
+    const unsubscribeOnNotificationOpen = messaging().onNotificationOpenedApp(
+      async (remoteMessage) => {
+        // Notification caused app to open from background state on iOS
+        const channelId = remoteMessage.data?.channel_id as string;
+        const channelType = remoteMessage.data?.channel_type as string;
+        if (channelId) {
+          await notifee.decrementBadgeCount();
+          navigateToChannel(channelId, channelType);
+        }
+      },
+    );
     // handle notification clicks on foreground
-    const unsubscribeForegroundEvent = notifee.onForegroundEvent(({ detail, type }) => {
+    const unsubscribeForegroundEvent = notifee.onForegroundEvent(async ({ detail, type }) => {
       if (type === EventType.PRESS) {
         // user has pressed the foreground notification
         const channelId = detail.notification?.data?.channel_id as string;
         const channelType = detail.notification?.data?.channel_type as string;
         if (channelId) {
+          await notifee.decrementBadgeCount();
           navigateToChannel(channelId, channelType);
         }
       }
@@ -138,6 +143,7 @@ const App = () => {
   useEffect(() => {
     try {
       firebase.initialize();
+      notifee.setBadgeCount(0);
     } catch (error) {
       console.error('Failed to initialize Firebase:', error);
     }

@@ -64,6 +64,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       data,
       title: 'New message from ' + message.message.user.name,
     });
+    await notifee.incrementBadgeCount();
   }
 });
 
@@ -190,6 +191,7 @@ export const useChatClient = () => {
     QuickSqliteClient.resetDB();
     setChatClient(null);
     chatClient?.disconnectUser();
+    await notifee.setBadgeCount(0);
     await AsyncStore.removeItem('@stream-rn-sampleapp-login-config');
   };
 
@@ -207,14 +209,16 @@ export const useChatClient = () => {
    * Listen to changes in unread counts and update the badge count
    */
   useEffect(() => {
-    const listener = chatClient?.on((e) => {
+    const listener = chatClient?.on(async (e) => {
       if (e.total_unread_count !== undefined) {
+        await notifee.setBadgeCount(e.total_unread_count);
         setUnreadCount(e.total_unread_count);
       } else {
         const countUnread = Object.values(chatClient.activeChannels).reduce(
           (count, channel) => count + channel.countUnread(),
           0,
         );
+        await notifee.setBadgeCount(countUnread);
         setUnreadCount(countUnread);
       }
     });
