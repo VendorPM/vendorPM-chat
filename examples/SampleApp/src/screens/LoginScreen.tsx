@@ -12,8 +12,8 @@ import {
 import { Eye, EyeOff } from 'react-native-feather';
 import { useTheme } from 'stream-chat-react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-import { LabeledTextInput } from './AdvancedUserSelectorScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VendorPmLogo } from '../images/VendorPmLogo';
 import { GoogleSignIn } from '../components/Login/GoogleSignIn';
@@ -24,7 +24,7 @@ import { Authentication } from '../utils/auth.util';
 import { useAppContext } from '../context/AppContext';
 import { getS3Link } from '../utils/s3.util';
 import { UserSelectorParamList } from '../types';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { LabeledTextInput } from '../components/LabeledTextInput';
 
 export type UserSelectorScreenNavigationProp = StackNavigationProp<UserSelectorParamList, 'Login'>;
 
