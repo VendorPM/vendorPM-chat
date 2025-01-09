@@ -8,7 +8,6 @@ type AppContextType = {
   chatClient: StreamChat<StreamChatGenerics> | null;
   loginUser: (config: LoginConfig) => void;
   logout: () => void;
-  switchUser: (userId?: string) => void;
   unreadCount: number | undefined;
 };
 

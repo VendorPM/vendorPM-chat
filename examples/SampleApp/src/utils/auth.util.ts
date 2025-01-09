@@ -1,4 +1,4 @@
-import { getAuth, signInWithEmailAndPassword } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 import AsyncStore from './AsyncStore';
 
 type LoginValue = {
@@ -10,11 +10,11 @@ export class Authentication {
   static login = ({ email, password }: LoginValue) => {
     AsyncStore.removeItem('email');
 
-    return signInWithEmailAndPassword(getAuth(), email, password);
+    return auth().signInWithEmailAndPassword(email, password);
   };
 
   static unauthenticate = async () => {
-    await getAuth().signOut();
+    await auth().signOut();
 
     await AsyncStore.clear();
   };

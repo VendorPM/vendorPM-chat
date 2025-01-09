@@ -3,10 +3,10 @@ import { StreamChat } from 'stream-chat';
 import messaging from '@react-native-firebase/messaging';
 import notifee from '@notifee/react-native';
 import { QuickSqliteClient } from 'stream-chat-react-native';
-import { USER_TOKENS, USERS } from '../ChatUsers';
 import AsyncStore from '../utils/AsyncStore';
 
 import type { LoginConfig, StreamChatGenerics } from '../types';
+import { Authentication } from '../utils/auth.util';
 
 // Request Push Notification permission from device.
 const requestNotificationPermission = async () => {
@@ -22,10 +22,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   if (!messageId) {
     return;
   }
-  const config = await AsyncStore.getItem<LoginConfig | null>(
-    '@stream-rn-sampleapp-login-config',
-    null,
-  );
+  const config = await AsyncStore.getItem<LoginConfig | null>('@vendorPM-login-config', null);
   if (!config) {
     return;
   }
@@ -96,7 +93,7 @@ export const useChatClient = () => {
     const connectedUser = await client.connectUser(user, config.userToken);
     const initialUnreadCount = connectedUser?.me?.total_unread_count;
     setUnreadCount(initialUnreadCount);
-    await AsyncStore.setItem('@stream-rn-sampleapp-login-config', config);
+    await AsyncStore.setItem('@vendorPM-login-config', config);
 
     const permissionAuthStatus = await messaging().hasPermission();
     const isEnabled =
@@ -159,31 +156,15 @@ export const useChatClient = () => {
     setChatClient(client);
   };
 
-  const switchUser = async (userId?: string) => {
+  const switchUser = async () => {
     setIsConnecting(true);
 
-    try {
-      if (userId) {
-        await loginUser({
-          apiKey: 'vuw97daxjzux',
-          userId: USERS[userId].id,
-          userImage: USERS[userId].image,
-          userName: USERS[userId].name,
-          userToken: USER_TOKENS[userId],
-        });
-      } else {
-        const config = await AsyncStore.getItem<LoginConfig | null>(
-          '@stream-rn-sampleapp-login-config',
-          null,
-        );
+    const config = await AsyncStore.getItem<LoginConfig | null>('@vendorPM-login-config', null);
 
-        if (config) {
-          await loginUser(config);
-        }
-      }
-    } catch (e) {
-      console.warn(e);
+    if (config) {
+      await loginUser(config);
     }
+
     setIsConnecting(false);
   };
 
@@ -191,8 +172,8 @@ export const useChatClient = () => {
     QuickSqliteClient.resetDB();
     setChatClient(null);
     chatClient?.disconnectUser();
+    await Authentication.logout();
     await notifee.setBadgeCount(0);
-    await AsyncStore.removeItem('@stream-rn-sampleapp-login-config');
   };
 
   useEffect(() => {
@@ -235,7 +216,6 @@ export const useChatClient = () => {
     isConnecting,
     loginUser,
     logout,
-    switchUser,
     unreadCount,
   };
 };
