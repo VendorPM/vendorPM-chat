@@ -1066,6 +1066,10 @@ PODS:
     - React-debug
   - react-native-cameraroll (5.10.0):
     - React-Core
+  - react-native-config (1.5.3):
+    - react-native-config/App (= 1.5.3)
+  - react-native-config/App (1.5.3):
+    - React-Core
   - react-native-document-picker (9.0.1):
     - React-Core
   - react-native-image-resizer (1.4.5):
@@ -1363,6 +1367,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
+  - react-native-config (from `../node_modules/react-native-config`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -1502,6 +1507,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   react-native-cameraroll:
     :path: "../node_modules/@react-native-camera-roll/camera-roll"
+  react-native-config:
+    :path: "../node_modules/react-native-config"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
   react-native-image-resizer:
@@ -1649,6 +1656,7 @@ SPEC CHECKSUMS:
   React-logger: 0331362115f0f5b392bd7ed14636d1a3ea612479
   React-Mapbuffer: 30d796a057e4e077d44b4c2ba17869fb8c1064eb
   react-native-cameraroll: 4701ae7c3dbcd3f5e9e150ca17f250a276154b35
+  react-native-config: 8f7283449bbb048902f4e764affbbf24504454af
   react-native-document-picker: 2b8f18667caee73a96708a82b284a4f40b30a156
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-netinfo: 299dad906cdbf3b67bcc6f693c807f98bdd127cc
@@ -1700,6 +1708,6 @@ SPEC CHECKSUMS:
   TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
   Yoga: a716eea57d0d3430219c0a5a233e1e93ee931eb7
 
-PODFILE CHECKSUM: dafabb10d2abb7497fffe0436293bcf70f7b017e
+PODFILE CHECKSUM: 129f2062a7cea3a9ab09181dc14296d616499a2a
 
 COCOAPODS: 1.15.2

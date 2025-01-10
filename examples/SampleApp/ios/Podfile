@@ -25,7 +25,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'SampleApp' do
+target 'VendorPM' do
   config = use_native_modules!
 
   # Beginning with firebase-ios-sdk v9+ (react-native-firebase v15+) we must tell CocoaPods to use frameworks.
@@ -45,10 +45,16 @@ target 'SampleApp' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'SampleAppTests' do
+  target 'VendorPM-Dev' do
     inherit! :complete
     # Pods for testing
   end
+
+   target 'VendorPM-Stage' do
+    inherit! :complete
+    # Pods for testing
+  end
+
   pod 'Firebase/Crashlytics'
   pod 'Firebase/Analytics'
   pod 'Firebase/AppDistribution'

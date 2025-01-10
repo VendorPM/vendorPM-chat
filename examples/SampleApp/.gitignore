@@ -56,6 +56,11 @@ yarn-error.log
 # Bundle artifact
 *.jsbundle
 
+# Local env files
+.env.dev
+.env.prod
+.env.qa
+
 # Ruby / CocoaPods
 /ios/Pods/
 /vendor

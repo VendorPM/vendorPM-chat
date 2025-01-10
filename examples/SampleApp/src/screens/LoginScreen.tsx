@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Eye, EyeOff } from 'react-native-feather';
 import { useTheme } from 'stream-chat-react-native';
+import Config from 'react-native-config';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -80,7 +81,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       const { data: streamChatToken } = await fetcher.legacyApi.get('/chat/token');
 
       loginUser({
-        apiKey: 'vuw97daxjzux',
+        apiKey: Config.STREAM_CHAT_KEY ?? '',
         userId: streamChatToken.id,
         userName: name,
         userToken: streamChatToken.token,
