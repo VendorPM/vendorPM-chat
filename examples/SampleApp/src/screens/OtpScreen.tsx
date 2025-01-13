@@ -58,12 +58,9 @@ export const OTPScreen: React.FC<OTPScreenProps> = ({
     } catch (e: any) {
       setCustomError(e.message);
     }
-
-    console.log('Resending OTP');
   };
 
   const getErrorText = () => {
-    console.log(customError);
     switch (customError) {
       case 'ERROR.EXPIRED_CODE':
         return 'This code has expired.';

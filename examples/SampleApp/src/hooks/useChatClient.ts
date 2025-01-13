@@ -81,7 +81,6 @@ export const useChatClient = () => {
     unsubscribePushListenersRef.current?.();
     const client = StreamChat.getInstance<StreamChatGenerics>(config.apiKey, {
       timeout: 6000,
-      // logger: (type, msg) => console.log(type, msg)
     });
     setChatClient(client);
 
@@ -128,7 +127,6 @@ export const useChatClient = () => {
             ...rest,
             ...((stream as unknown as Record<string, string> | undefined) ?? {}), // extract and merge stream object if present
           };
-          console.log('===>', data);
           await notifee.displayNotification({
             android: {
               channelId,
