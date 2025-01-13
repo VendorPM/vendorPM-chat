@@ -11,9 +11,9 @@ import {
 } from 'react-native';
 import { Eye, EyeOff } from 'react-native-feather';
 import { useTheme } from 'stream-chat-react-native';
-import Config from 'react-native-config';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { StackNavigationProp } from '@react-navigation/stack';
+import Config from 'react-native-config';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VendorPmLogo } from '../images/VendorPmLogo';
@@ -165,7 +165,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
   useEffect(() => {
     GoogleSignin.configure({
-      webClientId: '525818996174-6g0os9h9d51b0fjgqdomaf658285b329.apps.googleusercontent.com',
+      webClientId: Config.WEB_CLIENT_ID,
     });
   }, []);
 

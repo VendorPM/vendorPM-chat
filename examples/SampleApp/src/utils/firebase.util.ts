@@ -1,14 +1,15 @@
 import auth from '@react-native-firebase/auth';
 import { initializeApp } from 'firebase/app';
+import Config from 'react-native-config';
 
 export const FIREBASE_CONFIG = {
-  apiKey: 'AIzaSyDCGovJcNbuiD3AYsvIh4YolmwjGEhTt4U',
-  appId: '1:525818996174:ios:b3475d12e4aecd3e33b79f',
-  authDomain: 'vendorpm-dev.firebaseapp.com',
-  measurementId: 'G-7XH9QX91TB',
-  messagingSenderId: '525818996174',
-  projectId: 'vendorpm-dev',
-  storageBucket: 'vendorpm-dev.firebasestorage.app',
+  apiKey: Config.API_KEY,
+  appId: Config.APP_ID,
+  authDomain: Config.AUTH_DOMAIN,
+  measurementId: Config.MEASUREMENT_ID,
+  messagingSenderId: Config.MESSAGING_SENDER_ID,
+  projectId: Config.PROJECT_ID,
+  storageBucket: Config.STORAGE_BUCKET,
 };
 
 const initialize = () => initializeApp(FIREBASE_CONFIG);
