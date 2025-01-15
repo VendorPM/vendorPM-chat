@@ -123,6 +123,7 @@ export const MessageSearchList: React.FC<MessageSearchListProps> = React.forward
                 navigation.navigate('ChannelScreen', {
                   channelId: item.channel?.id,
                   messageId: item.id,
+                  channelType: item.channel?.type,
                 });
               }}
               style={[styles.itemContainer, { borderBottomColor: border }]}
