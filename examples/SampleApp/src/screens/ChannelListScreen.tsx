@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useNavigation, useScrollToTop } from '@react-navigation/native';
 import { ChannelList, CircleClose, Search, useTheme } from 'stream-chat-react-native';

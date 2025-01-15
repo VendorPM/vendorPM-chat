@@ -87,6 +87,7 @@ const CustomPreview: React.FC<CustomPreviewProps> = ({ channel }) => {
           name: 'ChannelScreen',
           params: {
             channelId: channel.id,
+            channelType: channel.type,
           },
         },
       ],
@@ -160,7 +161,7 @@ type ListComponentProps = ChannelListMessengerProps<StreamChatGenerics>;
 const ListComponent: React.FC<ListComponentProps> = (props) => {
   const { channels, loadingChannels, refreshing } = useChannelsContext();
 
-  if (channels.length <= 1 && !loadingChannels && !refreshing) {
+  if (channels && channels.length <= 1 && !loadingChannels && !refreshing) {
     return <EmptyListComponent />;
   }
 

@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Channel } from 'stream-chat';
 import { Keyboard, SafeAreaView, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -110,6 +111,8 @@ export const UserInfoOverlay = (props: UserInfoOverlayProps) => {
   const { data, reset } = useUserInfoOverlayContext();
   const { vh } = useViewport();
 
+  const [existingChannel, setExistingChannel] = useState<Channel<StreamChatGenerics>[]>([]);
+
   const screenHeight = vh(100);
   const halfScreenHeight = vh(50);
 
@@ -156,6 +159,22 @@ export const UserInfoOverlay = (props: UserInfoOverlayProps) => {
     fadeScreen(!!visible);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
+
+  useEffect(() => {
+    const checkExistingChannel = async () => {
+      if (!client.user?.id) {
+        return;
+      }
+      const members = [client.user.id, member?.user?.id || ''];
+      const channels = await client.queryChannels({
+        distinct: true,
+        members,
+      });
+      setExistingChannel(channels);
+    };
+
+    checkExistingChannel();
+  }, [client, client.user?.id, member?.user?.id]);
 
   const onPan = useAnimatedGestureHandler<PanGestureHandlerGestureEvent>({
     onActive: (evt) => {
@@ -287,50 +306,35 @@ export const UserInfoOverlay = (props: UserInfoOverlayProps) => {
                           />
                         </View>
                       </View>
-                      <TapGestureHandler
-                        onHandlerStateChange={async ({ nativeEvent: { state } }) => {
-                          if (state === State.END) {
-                            if (!client.user?.id) {
-                              return;
+                      {existingChannel.length === 1 && (
+                        <TapGestureHandler
+                          onHandlerStateChange={async ({ nativeEvent: { state } }) => {
+                            if (state === State.END) {
+                              setOverlay('none');
+                              if (navigation) {
+                                navigation.navigate('OneOnOneChannelDetailScreen', {
+                                  channel: existingChannel[0],
+                                });
+                              }
                             }
-
-                            const members = [client.user.id, member.user?.id || ''];
-
-                            // Check if the channel already exists.
-                            const channels = await client.queryChannels({
-                              distinct: true,
-                              members,
-                            });
-
-                            const newChannel =
-                              channels.length === 1
-                                ? channels[0]
-                                : client.channel('messaging', {
-                                    members,
-                                  });
-                            setOverlay('none');
-                            if (navigation) {
-                              navigation.navigate('OneOnOneChannelDetailScreen', {
-                                channel: newChannel,
-                              });
-                            }
-                          }
-                        }}
-                      >
-                        <View
-                          style={[
-                            styles.row,
-                            {
-                              borderTopColor: border,
-                            },
-                          ]}
+                          }}
                         >
-                          <View style={styles.rowInner}>
-                            <User pathFill={grey} />
+                          <View
+                            style={[
+                              styles.row,
+                              {
+                                borderTopColor: border,
+                              },
+                            ]}
+                          >
+                            <View style={styles.rowInner}>
+                              <User pathFill={grey} />
+                            </View>
+                            <Text style={[styles.rowText, { color: black }]}>View info</Text>
                           </View>
-                          <Text style={[styles.rowText, { color: black }]}>View info</Text>
-                        </View>
-                      </TapGestureHandler>
+                        </TapGestureHandler>
+                      )}
+
                       <TapGestureHandler
                         onHandlerStateChange={async ({ nativeEvent: { state } }) => {
                           if (state === State.END) {
