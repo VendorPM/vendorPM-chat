@@ -1,4 +1,4 @@
-package com.sampleapp
+package com.vendorpm.app.dev
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

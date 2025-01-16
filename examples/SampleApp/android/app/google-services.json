@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:190151624402:android:6d0704d0dfa35b57658f0b",
         "android_client_info": {
-          "package_name": "com.sampleapp"
+          "package_name": "com.vendorpm.app.dev"
         }
       },
       "oauth_client": [
