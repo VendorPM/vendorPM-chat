@@ -48,7 +48,7 @@ export const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
           backgroundColor: white_smoke,
           borderColor,
           borderWidth: 1,
-          paddingVertical: !!value || !!error ? 16 : 8,
+          paddingVertical: 12,
         },
       ]}
     >
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '400',
   },
   labelTextContainer: {
     borderRadius: 6,

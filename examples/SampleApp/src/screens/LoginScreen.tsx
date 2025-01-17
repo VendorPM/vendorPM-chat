@@ -165,7 +165,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
   useEffect(() => {
     GoogleSignin.configure({
-      webClientId: Config.WEB_CLIENT_ID,
+      webClientId: Platform.select({
+        ios: Config.WEB_CLIENT_ID_IOS,
+        android: Config.WEB_CLIENT_ID_ANDROID,
+      }),
     });
   }, []);
 
@@ -210,7 +213,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                   }}
                   secureTextEntry={!isPasswordVisible}
                   value={password}
-                  keyboardType='visible-password'
+                  keyboardType='default'
                 />
                 <TouchableOpacity onPress={togglePasswordVisibility} style={styles.visibleIcon}>
                   {isPasswordVisible ? (
