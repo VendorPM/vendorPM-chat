@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "580311075060",
+    "project_id": "vendorpm-stage",
+    "storage_bucket": "vendorpm-stage.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:580311075060:android:7715d6551eea88ed4636a1",
+        "android_client_info": {
+          "package_name": "com.vendorpm.app.qa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "580311075060-064bmrloe0ii2n8iti4ko8j1oe0en7vu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vendorpm.app.qa",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "580311075060-pp7m81lg4n4n6av06lpvamh95i6sntad.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrMo0eHrr7kT1kcgWCc2ddMpRs61Y0ZoQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "580311075060-pp7m81lg4n4n6av06lpvamh95i6sntad.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "580311075060-h6db9hg7u8mn4iu9349ve6ciirr0mgvv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vendorpm.app.qa"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
