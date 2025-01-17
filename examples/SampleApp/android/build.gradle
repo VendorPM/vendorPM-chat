@@ -8,6 +8,7 @@ buildscript {
         minSdkVersion = 24
         compileSdkVersion = 34
         targetSdkVersion = 34
+        googlePlayServicesAuthVersion = "20.7.0"
         ndkVersion = "25.1.8937393"
         // Added for react-native-audio-recorder-player(Value - 1.6.10)
         kotlinVersion = "1.6.10"
@@ -21,7 +22,7 @@ buildscript {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
-        classpath 'com.google.gms:google-services:4.3.4'
+        classpath 'com.google.gms:google-services:4.4.2'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'

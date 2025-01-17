@@ -13,20 +13,24 @@ type GoogleBtnProps = {
 
 export const GoogleSignIn = ({ onClick }: GoogleBtnProps) => {
   async function onGoogleButtonPress() {
-    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-    const signInResult = (await GoogleSignin.signIn()) as SignInSuccessResponse;
+    try {
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      const signInResult = (await GoogleSignin.signIn()) as SignInSuccessResponse;
 
-    let idToken: string | undefined = (signInResult as any).idToken || signInResult.data?.idToken;
+      let idToken: string | undefined = (signInResult as any).idToken || signInResult.data?.idToken;
 
-    if (!idToken) {
-      throw new Error('No ID token found');
+      if (!idToken) {
+        throw new Error('No ID token found');
+      }
+
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      const userCredential = await auth().signInWithCredential(googleCredential);
+
+      return userCredential;
+    } catch (error) {
+      console.error('Google Sign-In Error:', error);
+      throw error; // Re-throw the error to be handled by the caller
     }
-
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-    const userCredential = await auth().signInWithCredential(googleCredential);
-
-    return userCredential;
   }
 
   return (
