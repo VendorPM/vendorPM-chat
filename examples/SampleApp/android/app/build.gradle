@@ -4,6 +4,14 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: "com.facebook.react"
 
+project.ext.envConfigFiles = [
+   prod: ".env.prod",
+   dev: ".env.dev",
+   stage: ".env.qa",
+ ]
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.
@@ -76,10 +84,10 @@ android {
 
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
-    namespace "com.vendorpm.app.dev"
+    namespace "com.vendorpm.app"
 
     defaultConfig {
-        applicationId "com.vendorpm.app.dev"
+        applicationId "com.vendorpm.app"
         minSdkVersion rootProject.ext.minSdkVersion
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -108,12 +116,40 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+
+    flavorDimensions ("environment")
+
+    productFlavors {
+        dev {
+            dimension "environment"
+            minSdkVersion rootProject.ext.minSdkVersion
+            applicationId 'com.vendorpm.app.dev'
+            targetSdkVersion rootProject.ext.targetSdkVersion
+            resValue "string", "build_config_package", "com.vendorpm.app"
+        }
+        prod {
+            dimension "environment"
+            minSdkVersion rootProject.ext.minSdkVersion
+            applicationId 'com.vendorpm.app'
+            targetSdkVersion rootProject.ext.targetSdkVersion
+            resValue "string", "build_config_package", "com.vendorpm.app"
+        }
+        stage {
+            dimension "environment"
+            minSdkVersion rootProject.ext.minSdkVersion
+            applicationId 'com.vendorpm.app.qa'
+            targetSdkVersion rootProject.ext.targetSdkVersion
+            resValue "string", "build_config_package", "com.vendorpm.app"
+        }
+    }
+
 }
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
     implementation("com.facebook.react:flipper-integration")
+    implementation project(':react-native-config')
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

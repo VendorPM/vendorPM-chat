@@ -1,4 +1,4 @@
-package com.vendorpm.app.dev
+package com.vendorpm.app
 
 import android.app.Application
 import com.facebook.react.PackageList
