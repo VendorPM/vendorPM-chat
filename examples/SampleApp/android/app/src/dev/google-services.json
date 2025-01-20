@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "525818996174-6vo3s3tgrgaamnc9561dp36eiieut655.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vendorpm.app.dev",
+            "certificate_hash": "1eb95f8abbc4c09212700ea51d88116631af00c4"
+          }
+        },
+        {
           "client_id": "525818996174-gs16lm2s3a44spmi12u6aj4kioms9u34.apps.googleusercontent.com",
           "client_type": 3
         }

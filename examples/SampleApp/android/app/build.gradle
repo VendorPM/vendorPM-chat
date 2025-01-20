@@ -92,8 +92,8 @@ android {
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
-        versionCode 22
-        versionName "0.0.22"
+        versionCode 24
+        versionName "0.0.24"
     }
 
     signingConfigs {
@@ -103,6 +103,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file("devRelease.keystore")
+            storePassword "vendorpm"
+            keyAlias "devReleaseKey"
+            keyPassword "vendorpm"
+        }
     }
     buildTypes {
         debug {
@@ -111,7 +117,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

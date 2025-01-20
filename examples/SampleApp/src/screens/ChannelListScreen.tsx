@@ -95,9 +95,8 @@ export const ChannelListScreen: React.FC = () => {
   }
 
   const filters = {
-    // Hack to display searching state [, search]
     members: { $in: [chatClientUserId] },
-    // members: { $in: [client.user.id] }
+    ...(searchInputText.trim() ? { name: { $autocomplete: searchInputText.trim() } } : {}),
     type: { $in: ['rfq_chat', 'pm_vendor', 'marketing', 'pitch'] },
   };
 
