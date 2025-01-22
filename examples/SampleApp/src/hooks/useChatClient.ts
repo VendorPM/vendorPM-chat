@@ -40,8 +40,8 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 
   // create the android channel to send the notification to
   const channelId = await notifee.createChannel({
-    id: 'chat-messages',
-    name: 'Chat Messages',
+    id: 'background',
+    name: 'Background Messages',
   });
 
   if (message.message.user?.name && message.message.text) {
@@ -119,7 +119,7 @@ export const useChatClient = () => {
           // create the android channel to send the notification to
           const channelId = await notifee.createChannel({
             id: 'foreground',
-            name: 'Foreground Messages',
+            name: 'In-App Notifications',
           });
           // display the notification on foreground
           const { stream, ...rest } = remoteMessage.data ?? {};
