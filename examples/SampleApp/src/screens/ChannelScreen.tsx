@@ -25,6 +25,8 @@ import { useChannelMembersStatus } from '../hooks/useChannelMembersStatus';
 
 import type { StackNavigatorParamList, StreamChatGenerics } from '../types';
 import { NetworkDownIndicator } from '../components/NetworkDownIndicator';
+import { CustomDateSeparator } from '../components/CustomDateSeparator';
+import { CustomDateHeader } from '../components/CustomDateHeader';
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
@@ -167,6 +169,8 @@ export const ChannelScreen: React.FC<ChannelScreenProps> = ({
           actions.push(copyMessageAction);
           return filteredActions;
         }}
+        DateHeader={CustomDateHeader}
+        InlineDateSeparator={CustomDateSeparator}
       >
         <ChannelHeader channel={channel} />
         <MessageList<StreamChatGenerics> thread={null} />
