@@ -22,7 +22,7 @@ export const useChannelMembersStatus = (channel: Channel<StreamChatGenerics>) =>
 
       return (newStatus = getUserActivityStatus(result?.user));
     } else {
-      const memberCountText = `${memberCount} Members`;
+      const memberCountText = `${memberCount} Members `;
       const onlineCountText = watchersCount > 0 ? `${watchersCount} Online` : '';
 
       newStatus = `${[memberCountText, onlineCountText].join(',')}`;

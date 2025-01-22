@@ -33,7 +33,6 @@ import { NewGroupChannelAddMemberScreen } from './src/screens/NewGroupChannelAdd
 import { NewGroupChannelAssignNameScreen } from './src/screens/NewGroupChannelAssignNameScreen';
 import { OneOnOneChannelDetailScreen } from './src/screens/OneOnOneChannelDetailScreen';
 import { SharedGroupsScreen } from './src/screens/SharedGroupsScreen';
-import { ThreadScreen } from './src/screens/ThreadScreen';
 
 import type { StreamChat } from 'stream-chat';
 import { firebase } from './src/utils/firebase.util';
@@ -331,14 +330,6 @@ const HomeScreen = () => {
         component={SharedGroupsScreen}
         name='SharedGroupsScreen'
         options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        component={ThreadScreen}
-        name='ThreadScreen'
-        options={{
-          gestureEnabled: Platform.OS === 'ios' && overlay === 'none',
-          headerShown: false,
-        }}
       />
     </Stack.Navigator>
   );

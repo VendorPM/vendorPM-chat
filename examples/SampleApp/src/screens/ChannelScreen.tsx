@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import Clipboard from '@react-native-clipboard/clipboard';
 import type { Channel as StreamChatChannel } from 'stream-chat';
-import { RouteProp, useFocusEffect, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 import {
   Channel,
   ChannelAvatar,
   MessageInput,
   MessageList,
-  ThreadContextValue,
+  messageActions as defaultMessageActions,
   useAttachmentPickerContext,
   useChannelPreviewDisplayName,
   useChatContext,
@@ -106,7 +107,6 @@ export const ChannelScreen: React.FC<ChannelScreenProps> = ({
   },
 }) => {
   const { chatClient } = useAppContext();
-  const navigation = useNavigation();
   const { bottom } = useSafeAreaInsets();
   const {
     theme: {
@@ -117,9 +117,6 @@ export const ChannelScreen: React.FC<ChannelScreenProps> = ({
   const [channel, setChannel] = useState<StreamChatChannel<StreamChatGenerics> | undefined>(
     channelFromProp,
   );
-
-  const [selectedThread, setSelectedThread] =
-    useState<ThreadContextValue<StreamChatGenerics>['thread']>();
 
   useEffect(() => {
     const initChannel = async () => {
@@ -137,10 +134,6 @@ export const ChannelScreen: React.FC<ChannelScreenProps> = ({
     initChannel();
   }, [channelId, chatClient, channelType]);
 
-  useFocusEffect(() => {
-    setSelectedThread(undefined);
-  });
-
   if (!channel || !chatClient) {
     return null;
   }
@@ -156,18 +149,27 @@ export const ChannelScreen: React.FC<ChannelScreenProps> = ({
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -300}
         messageId={messageId}
         NetworkDownIndicator={() => null}
-        thread={selectedThread}
+        hasCommands={false}
+        messageActions={(param) => {
+          const { message } = param;
+          // Retrieve default actions
+          const actions = defaultMessageActions(param);
+
+          const copyMessageAction = {
+            actionType: 'copyMessage',
+            title: 'Copy Message',
+            action: () => {
+              Clipboard.setString(message.text ?? '');
+            },
+          };
+          // Filter out the "Thread Reply" action
+          const filteredActions = actions.filter((action) => action.actionType !== 'threadReply'); // 'reply' is the action id for thread reply
+          actions.push(copyMessageAction);
+          return filteredActions;
+        }}
       >
         <ChannelHeader channel={channel} />
-        <MessageList<StreamChatGenerics>
-          onThreadSelect={(thread) => {
-            setSelectedThread(thread);
-            navigation.navigate('ThreadScreen', {
-              channel,
-              thread,
-            });
-          }}
-        />
+        <MessageList<StreamChatGenerics> thread={null} />
         <MessageInput audioRecordingEnabled={false} />
       </Channel>
     </View>

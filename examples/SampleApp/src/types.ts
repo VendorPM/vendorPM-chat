@@ -1,6 +1,5 @@
 import type { Immutable } from 'seamless-immutable';
 import type { Channel, UserResponse } from 'stream-chat';
-import type { ThreadContextValue } from 'stream-chat-react-native';
 import type { Theme } from '@react-navigation/native';
 
 export type LocalAttachmentType = {
@@ -64,10 +63,6 @@ export type StackNavigatorParamList = {
   };
   SharedGroupsScreen: {
     user: Immutable<UserResponse<StreamChatGenerics>> | UserResponse<StreamChatGenerics>;
-  };
-  ThreadScreen: {
-    channel: Channel<StreamChatGenerics>;
-    thread: ThreadContextValue<StreamChatGenerics>['thread'];
   };
 };
 
