@@ -7,6 +7,15 @@ import AsyncStore from '../utils/AsyncStore';
 
 import type { LoginConfig, StreamChatGenerics } from '../types';
 import { Authentication } from '../utils/auth.util';
+import { PermissionsAndroid, Platform } from 'react-native';
+
+const checkAndroidPermission = async () => {
+  if (Platform.OS === 'android') {
+    try {
+      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+    } catch (error) {}
+  }
+};
 
 // Request Push Notification permission from device.
 const requestNotificationPermission = async () => {
@@ -176,6 +185,7 @@ export const useChatClient = () => {
 
   useEffect(() => {
     const run = async () => {
+      await checkAndroidPermission();
       await requestNotificationPermission();
       await switchUser();
     };
