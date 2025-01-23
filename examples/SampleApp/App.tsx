@@ -108,31 +108,39 @@ const App = () => {
         }
       }
     });
-    notifee.getInitialNotification().then((initialNotification) => {
-      if (initialNotification) {
-        // Notification caused app to open from quit state on Android
-        const channelId = initialNotification.notification.data?.channel_id as string;
-        const channelType = initialNotification.notification.data?.channel_type as string;
-        if (channelId) {
-          initialChannelIdGlobalRef.current = channelId;
-          initialChannelTypeGlobalRef.current = channelType;
-        }
-      }
-    });
-    messaging()
-      .getInitialNotification()
-      .then((remoteMessage) => {
-        if (remoteMessage) {
-          // Notification caused app to open from quit state on iOS
-          const channelId = remoteMessage.data?.channel_id as string;
-          const channelType = remoteMessage.data?.channel_type as string;
+
+    if (Platform.OS === 'android') {
+      notifee.getInitialNotification().then((initialNotification) => {
+        if (initialNotification) {
+          console.log('Notification opened from quit state:', initialNotification);
+          // Notification caused app to open from quit state on Android
+          const channelId = initialNotification.notification.data?.channel_id as string;
+          const channelType = initialNotification.notification.data?.channel_type as string;
           if (channelId) {
-            // this will make the app to start with the channel screen with this channel id
             initialChannelIdGlobalRef.current = channelId;
             initialChannelTypeGlobalRef.current = channelType;
           }
         }
       });
+    }
+
+    if (Platform.OS === 'ios') {
+      messaging()
+        .getInitialNotification()
+        .then((remoteMessage) => {
+          if (remoteMessage) {
+            // Notification caused app to open from quit state on iOS
+            const channelId = remoteMessage.data?.channel_id as string;
+            const channelType = remoteMessage.data?.channel_type as string;
+            if (channelId) {
+              // this will make the app to start with the channel screen with this channel id
+              initialChannelIdGlobalRef.current = channelId;
+              initialChannelTypeGlobalRef.current = channelType;
+            }
+          }
+        });
+    }
+
     return () => {
       unsubscribeOnNotificationOpen();
       unsubscribeForegroundEvent();

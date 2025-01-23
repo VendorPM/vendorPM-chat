@@ -11,8 +11,8 @@ buildscript {
         googlePlayServicesAuthVersion = "20.7.0"
         ndkVersion = "25.1.8937393"
         // Added for react-native-audio-recorder-player(Value - 1.6.10)
-        kotlinVersion = "1.6.10"
-        androidXCore = "1.0.2"
+        kotlinVersion = "1.9.22"
+        androidXCore = "1.12.0"
     }
     repositories {
         google()
@@ -31,6 +31,8 @@ buildscript {
 
 allprojects {
     repositories {
+        google()
+        mavenCentral()
         maven {
             url "$rootDir/../../../node_modules/detox/Detox-android"
         }
