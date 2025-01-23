@@ -92,8 +92,8 @@ android {
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
-        versionCode 24
-        versionName "0.0.24"
+        versionCode 26
+        versionName "0.0.26"
     }
 
     signingConfigs {

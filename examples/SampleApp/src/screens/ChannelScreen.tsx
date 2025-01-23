@@ -14,7 +14,7 @@ import {
   useTheme,
   useTypingString,
 } from 'stream-chat-react-native';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -30,6 +30,21 @@ import { CustomDateHeader } from '../components/CustomDateHeader';
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  headerSubtitle: {
+    alignItems: 'center',
+  },
+  titleText: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  addressText: {
+    fontSize: 12,
+  },
+  statusText: {
+    fontSize: 10,
+    marginTop: 8,
+  },
 });
 
 export type ChannelScreenNavigationProp = StackNavigationProp<
@@ -46,14 +61,33 @@ export type ChannelHeaderProps = {
   channel: StreamChatChannel<StreamChatGenerics>;
 };
 
+const Title = ({ displayName }: { displayName: string }) => {
+  return <Text style={styles.titleText}>{displayName}</Text>;
+};
+
+const Subtitle: React.FC<ChannelHeaderProps> = ({ channel }) => {
+  const membersStatus = useChannelMembersStatus(channel);
+  const { isOnline } = useChatContext();
+  const typing = useTypingString();
+
+  if (isOnline) {
+    return (
+      <View style={styles.headerSubtitle}>
+        {/* TODO: Remove this hardcoded value once we have the api */}
+        <Text style={styles.addressText}>12 Front St., Toronto, ON</Text>
+        {<Text style={styles.statusText}>{typing ? typing : membersStatus}</Text>}
+      </View>
+    );
+  } else {
+    return <NetworkDownIndicator titleSize='large' />;
+  }
+};
+
 const ChannelHeader: React.FC<ChannelHeaderProps> = ({ channel }) => {
   const { closePicker } = useAttachmentPickerContext();
-  const membersStatus = useChannelMembersStatus(channel);
   const displayName = useChannelPreviewDisplayName(channel, 30);
-  const { isOnline } = useChatContext();
   const { chatClient } = useAppContext();
   const navigation = useNavigation<ChannelScreenNavigationProp>();
-  const typing = useTypingString();
 
   if (!channel || !chatClient) {
     return null;
@@ -95,9 +129,9 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = ({ channel }) => {
         </TouchableOpacity>
       )}
       showUnreadCountBadge
-      Subtitle={isOnline ? undefined : NetworkDownIndicator}
-      subtitleText={typing ? typing : membersStatus}
-      titleText={displayName}
+      Subtitle={() => Subtitle({ channel })}
+      Title={() => Title({ displayName })}
+      titleText=''
     />
   );
 };

@@ -57,6 +57,21 @@ const getChatStyle = (colorScheme: ColorSchemeName): DeepPartial<Theme> => ({
           white_smoke: '#F2F2F2',
           white_snow: '#FCFCFC',
         },
+  channelPreview: {
+    container: {
+      backgroundColor: 'transparent',
+      borderBottomWidth: 0,
+      alignItems: 'center',
+    },
+    row: {
+      alignItems: 'flex-start',
+      paddingLeft: 12,
+      gap: 8,
+    },
+    contentContainer: {
+      gap: 8,
+    },
+  },
   ...(colorScheme === 'dark' ? {} : {}),
 });
 

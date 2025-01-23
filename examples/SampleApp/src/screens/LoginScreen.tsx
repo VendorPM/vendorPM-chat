@@ -73,17 +73,19 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const handleAuthenticationComplete = async () => {
     setIsLoading(true);
     try {
-      const {
-        data: { name, profile_pic },
-      } = await fetcher.legacyApi.get('/users/user');
+      const { data: user } = await fetcher.legacyApi.get('/users/user');
 
-      const profilePicUrl = profile_pic ? getS3Link(profile_pic) : undefined;
+      const isVendor = !user.pm && user.vendor;
+
+      const profile_pic = isVendor ? user.vendor.logo : user.profile_pic;
+
+      const profilePicUrl = getS3Link(profile_pic);
       const { data: streamChatToken } = await fetcher.legacyApi.get('/chat/token');
 
       loginUser({
         apiKey: Config.STREAM_CHAT_KEY ?? '',
         userId: streamChatToken.id,
-        userName: name,
+        userName: user.name,
         userToken: streamChatToken.token,
         userImage: profilePicUrl,
       });

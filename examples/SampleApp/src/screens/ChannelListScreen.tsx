@@ -1,7 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useNavigation, useScrollToTop } from '@react-navigation/native';
-import { ChannelList, CircleClose, Search, useTheme } from 'stream-chat-react-native';
+import {
+  ChannelList,
+  ChannelPreviewTitleProps,
+  CircleClose,
+  Search,
+  useTheme,
+} from 'stream-chat-react-native';
 import { Channel } from 'stream-chat';
 import { ChannelPreview } from '../components/ChannelPreview';
 import { ChatScreenHeader } from '../components/ChatScreenHeader';
@@ -46,14 +52,37 @@ const styles = StyleSheet.create({
     paddingTop: 0, // removal of iOS top padding for weird centering
     textAlignVertical: 'center', // for android vertical text centering
   },
+  PreviewTitle: {
+    flexShrink: 1,
+    gap: 2,
+  },
+  displayName: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  displayAddress: {
+    fontSize: 12,
+    fontWeight: '400',
+  },
 });
 
-const sort: ChannelSort<StreamChatGenerics> = { last_updated: -1 };
+const sort: ChannelSort<StreamChatGenerics> = { has_unread: -1 };
 const options = {
   presence: true,
   state: true,
   watch: true,
 };
+
+const CustomPreviewTitle = (prop: ChannelPreviewTitleProps<StreamChatGenerics>) => {
+  return (
+    <View style={styles.PreviewTitle}>
+      <Text style={styles.displayName}>{prop.displayName}</Text>
+      {/* TODO: Remove this hardcoded value once we have the api */}
+      <Text style={styles.displayAddress}>12 Front St., Toronto, ON</Text>
+    </View>
+  );
+};
+
 export const ChannelListScreen: React.FC = () => {
   const { chatClient } = useAppContext();
   const navigation = useNavigation();
@@ -190,6 +219,7 @@ export const ChannelListScreen: React.FC = () => {
               Preview={ChannelPreview}
               setFlatListRef={setScrollRef}
               sort={sort}
+              PreviewTitle={CustomPreviewTitle}
             />
           </View>
         </View>

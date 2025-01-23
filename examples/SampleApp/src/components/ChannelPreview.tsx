@@ -35,6 +35,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
+  previewContainer: {
+    borderBottomWidth: 1,
+    paddingVertical: 4,
+  },
 });
 
 type ChannelListScreenNavigationProp = StackNavigationProp<
@@ -45,7 +49,7 @@ type ChannelListScreenNavigationProp = StackNavigationProp<
 export const ChannelPreview: React.FC<ChannelPreviewMessengerProps<StreamChatGenerics>> = (
   props,
 ) => {
-  const { channel } = props;
+  const { channel, unread } = props;
 
   const { setOverlay } = useAppOverlayContext();
 
@@ -59,9 +63,10 @@ export const ChannelPreview: React.FC<ChannelPreviewMessengerProps<StreamChatGen
 
   const {
     theme: {
-      colors: { accent_red, white_smoke },
+      colors: { accent_red, white_smoke, border },
     },
   } = useTheme();
+  const backgroundColor = unread ? '#EFF6FF' : '#fff';
 
   const otherMembers = channel
     ? Object.values(channel.state.members).filter((member) => member.user?.id !== data?.clientId)
@@ -104,7 +109,9 @@ export const ChannelPreview: React.FC<ChannelPreviewMessengerProps<StreamChatGen
         </View>
       )}
     >
-      <ChannelPreviewMessenger {...props} />
+      <View style={[styles.previewContainer, { backgroundColor, borderBottomColor: border }]}>
+        <ChannelPreviewMessenger {...props} />
+      </View>
     </Swipeable>
   );
 };
