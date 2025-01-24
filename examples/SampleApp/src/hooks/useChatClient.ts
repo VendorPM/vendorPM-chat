@@ -19,11 +19,7 @@ const checkAndroidPermission = async () => {
 
 // Request Push Notification permission from device.
 const requestNotificationPermission = async () => {
-  const authStatus = await messaging().requestPermission();
-  const isEnabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-  console.log('Permission Status', { authStatus, isEnabled });
+  await messaging().requestPermission();
 };
 
 export const useChatClient = () => {

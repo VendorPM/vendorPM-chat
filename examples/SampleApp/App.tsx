@@ -112,7 +112,6 @@ const App = () => {
     if (Platform.OS === 'android') {
       notifee.getInitialNotification().then((initialNotification) => {
         if (initialNotification) {
-          console.log('Notification opened from quit state:', initialNotification);
           // Notification caused app to open from quit state on Android
           const channelId = initialNotification.notification.data?.channel_id as string;
           const channelType = initialNotification.notification.data?.channel_type as string;
