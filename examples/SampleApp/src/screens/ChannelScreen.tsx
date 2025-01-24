@@ -30,6 +30,10 @@ import { CustomDateHeader } from '../components/CustomDateHeader';
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  rightContentContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
   headerSubtitle: {
     alignItems: 'center',
   },
@@ -37,9 +41,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     fontWeight: '600',
-  },
-  addressText: {
-    fontSize: 12,
   },
   statusText: {
     fontSize: 10,
@@ -61,10 +62,6 @@ export type ChannelHeaderProps = {
   channel: StreamChatChannel<StreamChatGenerics>;
 };
 
-const Title = ({ displayName }: { displayName: string }) => {
-  return <Text style={styles.titleText}>{displayName}</Text>;
-};
-
 const Subtitle: React.FC<ChannelHeaderProps> = ({ channel }) => {
   const membersStatus = useChannelMembersStatus(channel);
   const { isOnline } = useChatContext();
@@ -73,8 +70,6 @@ const Subtitle: React.FC<ChannelHeaderProps> = ({ channel }) => {
   if (isOnline) {
     return (
       <View style={styles.headerSubtitle}>
-        {/* TODO: Remove this hardcoded value once we have the api */}
-        <Text style={styles.addressText}>12 Front St., Toronto, ON</Text>
         {<Text style={styles.statusText}>{typing ? typing : membersStatus}</Text>}
       </View>
     );
@@ -83,20 +78,56 @@ const Subtitle: React.FC<ChannelHeaderProps> = ({ channel }) => {
   }
 };
 
-const ChannelHeader: React.FC<ChannelHeaderProps> = ({ channel }) => {
+const HeaderTitle = ({
+  displayName,
+  channel,
+}: {
+  displayName: string;
+  channel: StreamChatChannel<StreamChatGenerics>;
+}) => {
   const { closePicker } = useAttachmentPickerContext();
-  const displayName = useChannelPreviewDisplayName(channel, 30);
-  const { chatClient } = useAppContext();
   const navigation = useNavigation<ChannelScreenNavigationProp>();
-
-  if (!channel || !chatClient) {
-    return null;
-  }
 
   const isOneOnOneConversation =
     channel &&
     Object.values(channel.state.members).length === 2 &&
     channel.id?.indexOf('!members-') === 0;
+
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        closePicker();
+        if (isOneOnOneConversation) {
+          navigation.navigate('OneOnOneChannelDetailScreen', {
+            channel,
+          });
+        } else {
+          navigation.navigate('GroupChannelDetailsScreen', {
+            channel,
+          });
+        }
+      }}
+    >
+      <View style={styles.rightContentContainer}>
+        <View style={{ width: '100%' }}>
+          <Text style={styles.titleText}>{displayName}</Text>
+          {Subtitle({ channel })}
+        </View>
+
+        <ChannelAvatar channel={channel} />
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const ChannelHeader: React.FC<ChannelHeaderProps> = ({ channel }) => {
+  const navigation = useNavigation<ChannelScreenNavigationProp>();
+  const displayName = useChannelPreviewDisplayName(channel, 30);
+  const { chatClient } = useAppContext();
+
+  if (!channel || !chatClient) {
+    return null;
+  }
 
   return (
     <ScreenHeader
@@ -109,28 +140,9 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = ({ channel }) => {
           navigation.goBack();
         }
       }}
-      // eslint-disable-next-line react/no-unstable-nested-components
-      RightContent={() => (
-        <TouchableOpacity
-          onPress={() => {
-            closePicker();
-            if (isOneOnOneConversation) {
-              navigation.navigate('OneOnOneChannelDetailScreen', {
-                channel,
-              });
-            } else {
-              navigation.navigate('GroupChannelDetailsScreen', {
-                channel,
-              });
-            }
-          }}
-        >
-          <ChannelAvatar channel={channel} />
-        </TouchableOpacity>
-      )}
+      RightContent={() => null}
       showUnreadCountBadge
-      Subtitle={() => Subtitle({ channel })}
-      Title={() => Title({ displayName })}
+      Title={() => HeaderTitle({ displayName, channel })}
       titleText=''
     />
   );
