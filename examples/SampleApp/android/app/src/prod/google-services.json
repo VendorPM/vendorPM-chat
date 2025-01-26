@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "737611827041",
+    "firebase_url": "https://vendorpm-b6167.firebaseio.com",
+    "project_id": "vendorpm-b6167",
+    "storage_bucket": "vendorpm-b6167.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:737611827041:android:e289e7b6bdeb3391842720",
+        "android_client_info": {
+          "package_name": "com.vendorpm.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "737611827041-7ph5ri40rp98n8of9nsceqq454n0mp7e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vendorpm.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "737611827041-fg0bihtkobm1h9dldpshtogta2ajhlcj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vendorpm.app",
+            "certificate_hash": "617ff91994eca400ffba58e20de1f9f7a88929b1"
+          }
+        },
+        {
+          "client_id": "737611827041-r9h36nq7h9aq0pb4lia7o6qhs4r6ovft.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vendorpm.app",
+            "certificate_hash": "b3e7528f3ce7524ef00f37cad8b25c22729f7ca0"
+          }
+        },
+        {
+          "client_id": "737611827041-fkdfmpkdegj15jqn8usk7q2ecn00h808.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM1mvU0Fbot-8ZK-WoUTvCFQAA4p4tDxU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "737611827041-fkdfmpkdegj15jqn8usk7q2ecn00h808.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "737611827041-g9s57tknqfgd3nn6faoq2bp4l595o112.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vendorpm.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
