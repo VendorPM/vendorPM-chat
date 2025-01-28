@@ -263,12 +263,8 @@ export const ChannelListScreen: React.FC = () => {
           <View style={[styles.channelListContainer, { opacity: searchQuery ? 0 : 1 }]}>
             <ChannelList<StreamChatGenerics>
               additionalFlatListProps={{
-                getItemLayout: (_, index) => ({
-                  index,
-                  length: 65,
-                  offset: 65 * index,
-                }),
                 keyboardDismissMode: 'on-drag',
+                initialNumToRender: 10,
               }}
               filters={filters}
               HeaderNetworkDownIndicator={() => null}
@@ -283,6 +279,7 @@ export const ChannelListScreen: React.FC = () => {
               setFlatListRef={setScrollRef}
               sort={sort}
               PreviewTitle={CustomPreviewTitle}
+              keyExtractor={(item) => item.id.toString()}
             />
           </View>
         </View>
