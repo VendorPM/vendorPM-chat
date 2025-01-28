@@ -1,5 +1,8 @@
 import React, { useEffect } from 'react';
-import { DevSettings, LogBox, Platform, useColorScheme, View } from 'react-native';
+import { DevSettings, Linking, Alert, LogBox, Platform, useColorScheme, View } from 'react-native';
+
+import VersionCheck from 'react-native-version-check';
+
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
@@ -146,6 +149,56 @@ const App = () => {
       unsubscribeOnNotificationOpen();
       unsubscribeForegroundEvent();
     };
+  }, []);
+
+  useEffect(() => {
+    // examples/SampleApp/App.tsx
+    const checkAppVersion = async () => {
+      try {
+        const latestVersion =
+          Platform.OS === 'ios'
+            ? await fetch('https://itunes.apple.com/ca/lookup?bundleId=com.vendorpm.app')
+                .then((r) => r.json())
+                .then((res) => {
+                  return res?.results[0]?.version;
+                })
+            : await VersionCheck.getLatestVersion({
+                provider: 'playStore',
+                packageName: 'com.vendorpm.app',
+                ignoreErrors: true,
+              });
+
+        const currentVersion = VersionCheck.getCurrentVersion();
+
+        // Consider using a version comparison function for semantic versioning
+        if (latestVersion > currentVersion) {
+          Alert.alert(
+            'Update Required',
+            'A new version of the app is available. Please update to continue using the app.',
+            [
+              {
+                text: 'Update Now',
+                onPress: async () => {
+                  Linking.openURL(
+                    Platform.OS === 'ios'
+                      ? await VersionCheck.getAppStoreUrl({ appID: 'com.vendorpm.app' })
+                      : await VersionCheck.getPlayStoreUrl({ packageName: 'com.vendorpm.app' }),
+                  );
+                },
+              },
+            ],
+            { cancelable: false },
+          );
+        } else {
+          // App is up-to-date; proceed with the app
+        }
+      } catch (error) {
+        // Handle error while checking app version
+        console.error('Error checking app version:', error);
+      }
+    };
+
+    checkAppVersion();
   }, []);
 
   useEffect(() => {
