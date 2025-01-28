@@ -18,6 +18,10 @@ import { usePaginatedSearchedMessages } from '../hooks/usePaginatedSearchedMessa
 import type { ChannelSort } from 'stream-chat';
 
 import type { StreamChatGenerics } from '../types';
+import { MapPin } from 'react-native-feather';
+import { rfq } from '../api/query/rfq.query';
+import { user } from '../api/query/user.query';
+import { isPm, isVendor } from '../utils/user.util';
 
 const styles = StyleSheet.create({
   channelListContainer: {
@@ -60,9 +64,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  displayAddressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#f4f5f5',
+    padding: 8,
+    borderRadius: 16,
+    alignSelf: 'flex-start',
+    flexGrow: 0,
+    width: 'auto',
+    marginBottom: 4,
+  },
   displayAddress: {
     fontSize: 12,
     fontWeight: '400',
+    flexGrow: 0,
   },
 });
 
@@ -74,11 +91,57 @@ const options = {
 };
 
 const CustomPreviewTitle = (prop: ChannelPreviewTitleProps<StreamChatGenerics>) => {
+  const { channel } = prop;
+  const {
+    theme: {
+      colors: { grey_dark },
+    },
+  } = useTheme();
+  const { data: userDetail } = user.query.useGet();
+
+  const isVendorUser = isVendor(userDetail);
+  const isPmUser = isPm(userDetail);
+
+  const rfqId = Number(channel.data?.rfq_id);
+  const enableVendorQueries = isVendorUser && channel.type === 'rfq_chat';
+  const enablePmQueries = isPmUser && channel.type === 'rfq_chat';
+
+  const vendorRfqQuery = rfq.query.useGet(rfqId, {
+    enabled: enableVendorQueries,
+  });
+
+  const pmRfqQuery = rfq.query.useGetPmRfq(rfqId, {
+    enabled: enablePmQueries,
+  });
+
+  const vendorRfq = vendorRfqQuery.data;
+  const pmRfq = pmRfqQuery.data;
+
+  const rfqDetail = vendorRfq || pmRfq;
+
   return (
     <View style={styles.PreviewTitle}>
       <Text style={styles.displayName}>{prop.displayName}</Text>
-      {/* TODO: Remove this hardcoded value once we have the api */}
-      <Text style={styles.displayAddress}>12 Front St., Toronto, ON</Text>
+      {rfqDetail && (
+        <>
+          {rfqDetail.properties?.slice(0, 2).map((property) => {
+            return (
+              <View style={styles.displayAddressContainer} key={property.id}>
+                <MapPin height={12} width={12} color={grey_dark} />
+                <Text style={styles.displayAddress}>{property.address.display}</Text>
+              </View>
+            );
+          })}
+          {rfqDetail.properties?.length && rfqDetail.properties.length > 2 && (
+            <View style={styles.displayAddressContainer}>
+              <MapPin height={12} width={12} color={grey_dark} />
+              <Text style={styles.displayAddress}>{`+${
+                rfqDetail.properties.length - 2
+              } more`}</Text>
+            </View>
+          )}
+        </>
+      )}
     </View>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { DevSettings, LogBox, Platform, useColorScheme, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-devsettings/withAsyncStorage';
@@ -83,6 +84,7 @@ const App = () => {
   const { chatClient, isConnecting, loginUser, logout, unreadCount } = useChatClient();
   const colorScheme = useColorScheme();
   const streamChatTheme = useStreamChatTheme();
+  const queryClient = new QueryClient();
 
   useEffect(() => {
     const unsubscribeOnNotificationOpen = messaging().onNotificationOpenedApp(
@@ -161,28 +163,30 @@ const App = () => {
         backgroundColor: streamChatTheme.colors?.white_snow || '#FCFCFC',
       }}
     >
-      <ThemeProvider style={streamChatTheme}>
-        <NavigationContainer
-          ref={RootNavigationRef}
-          theme={{
-            colors: {
-              ...(colorScheme === 'dark' ? DarkTheme : DefaultTheme).colors,
-              background: streamChatTheme.colors?.white_snow || '#FCFCFC',
-            },
-            dark: colorScheme === 'dark',
-          }}
-        >
-          <AppContext.Provider value={{ chatClient, loginUser, logout, unreadCount }}>
-            {isConnecting && !chatClient ? (
-              <LoadingScreen />
-            ) : chatClient ? (
-              <DrawerNavigatorWrapper chatClient={chatClient} />
-            ) : (
-              <UserSelector />
-            )}
-          </AppContext.Provider>
-        </NavigationContainer>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider style={streamChatTheme}>
+          <NavigationContainer
+            ref={RootNavigationRef}
+            theme={{
+              colors: {
+                ...(colorScheme === 'dark' ? DarkTheme : DefaultTheme).colors,
+                background: streamChatTheme.colors?.white_snow || '#FCFCFC',
+              },
+              dark: colorScheme === 'dark',
+            }}
+          >
+            <AppContext.Provider value={{ chatClient, loginUser, logout, unreadCount }}>
+              {isConnecting && !chatClient ? (
+                <LoadingScreen />
+              ) : chatClient ? (
+                <DrawerNavigatorWrapper chatClient={chatClient} />
+              ) : (
+                <UserSelector />
+              )}
+            </AppContext.Provider>
+          </NavigationContainer>
+        </ThemeProvider>
+      </QueryClientProvider>
     </SafeAreaProvider>
   );
 };

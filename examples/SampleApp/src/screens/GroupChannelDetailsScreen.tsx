@@ -1,13 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -25,8 +17,6 @@ import { useBottomSheetOverlayContext } from '../context/BottomSheetOverlayConte
 import { useUserInfoOverlayContext } from '../context/UserInfoOverlayContext';
 import { useChannelMembersStatus } from '../hooks/useChannelMembersStatus';
 import { AddUser } from '../icons/AddUser';
-import { Check } from '../icons/Check';
-import { CircleClose } from '../icons/CircleClose';
 import { DownArrow } from '../icons/DownArrow';
 import { File } from '../icons/File';
 import { GoForward } from '../icons/GoForward';
@@ -36,10 +26,14 @@ import { RemoveUser } from '../icons/RemoveUser';
 import { getUserActivityStatus } from '../utils/getUserActivityStatus';
 
 import type { StackNavigationProp } from '@react-navigation/stack';
-import type { Channel, UserResponse } from 'stream-chat';
+import type { UserResponse } from 'stream-chat';
 
 import type { StackNavigatorParamList, StreamChatGenerics } from '../types';
 import { Pin } from '../icons/Pin';
+import { rfq } from '../api/query/rfq.query';
+import { MapPin } from 'react-native-feather';
+import { user } from '../api/query/user.query';
+import { isPm, isVendor } from '../utils/user.util';
 
 const styles = StyleSheet.create({
   actionContainer: {
@@ -53,8 +47,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
-  changeNameContainer: {
-    alignItems: 'center',
+  detailContainer: {
+    alignItems: 'flex-start',
     borderBottomWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -62,8 +56,7 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     paddingVertical: 20,
   },
-  changeNameInputBox: {
-    flex: 1,
+  groupNameBox: {
     fontSize: 14,
     fontWeight: '700',
     includeFontPadding: false, // for android vertical text centering
@@ -72,7 +65,31 @@ const styles = StyleSheet.create({
     paddingTop: 0, // removal of iOS top padding for weird centering
     textAlignVertical: 'center', // for android vertical text centering
   },
-  changeNameInputContainer: {
+  propertiesContainer: {
+    flex: 1,
+    gap: 4,
+    paddingLeft: 4,
+  },
+
+  displayAddressContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+    marginHorizontal: 8,
+    backgroundColor: '#f4f5f5',
+    padding: 8,
+    borderRadius: 16,
+    alignSelf: 'flex-start',
+    flexGrow: 0,
+    width: 'auto',
+    marginBottom: 4,
+  },
+  displayAddress: {
+    fontSize: 12,
+    fontWeight: '400',
+    flexGrow: 0,
+  },
+  NameInputContainer: {
     alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
@@ -163,23 +180,41 @@ export const GroupChannelDetailsScreen: React.FC<GroupChannelDetailsProps> = ({
   const { setData: setUserInfoOverlayData } = useUserInfoOverlayContext();
   const navigation = useNavigation<GroupChannelDetailsScreenNavigationProp>();
   const { setOverlay } = useOverlayContext();
+  const { data: userDetail } = user.query.useGet();
+  const isVendorUser = isVendor(userDetail);
+  const isPmUser = isPm(userDetail);
+  const rfqId = Number(channel.data?.rfq_id);
+  const enableVendorQueries = isVendorUser && channel.type === 'rfq_chat';
+  const enablePmQueries = isPmUser && channel.type === 'rfq_chat';
+
+  const vendorRfqQuery = rfq.query.useGet(rfqId, {
+    enabled: enableVendorQueries,
+  });
+
+  const pmRfqQuery = rfq.query.useGetPmRfq(rfqId, {
+    enabled: enablePmQueries,
+  });
+
+  const vendorRfq = vendorRfqQuery.data;
+  const pmRfq = pmRfqQuery.data;
+
+  const rfqDetail = vendorRfq || pmRfq;
+
   const {
     theme: {
-      colors: { accent_blue, accent_green, black, border, grey, white, white_smoke },
+      colors: { accent_blue, accent_green, black, border, grey, white, white_smoke, grey_dark },
     },
   } = useTheme();
 
-  const textInputRef = useRef<TextInput>(null);
   const [muted, setMuted] = useState(
     chatClient?.mutedChannels.some((mute) => mute.channel?.id === channel?.id),
   );
-  const [groupName, setGroupName] = useState(channel.data?.name);
   const allMembers = Object.values(channel.state.members);
   const [members, setMembers] = useState(allMembers.slice(0, 3));
-  const [textInputFocused, setTextInputFocused] = useState(false);
 
   const membersStatus = useChannelMembersStatus(channel);
   const displayName = useChannelPreviewDisplayName<StreamChatGenerics>(channel, 30);
+  const groupName = channel.data?.name;
 
   const allMembersLength = allMembers.length;
   useEffect(() => {
@@ -284,8 +319,6 @@ export const GroupChannelDetailsScreen: React.FC<GroupChannelDetailsProps> = ({
             >
               <View style={styles.memberRow}>
                 <Avatar
-                  channelId={channel.id}
-                  id={member.user?.id}
                   image={member.user?.image}
                   name={member.user?.name}
                   online={member.user?.online}
@@ -332,56 +365,40 @@ export const GroupChannelDetailsScreen: React.FC<GroupChannelDetailsProps> = ({
         <>
           <View
             style={[
-              styles.changeNameContainer,
+              styles.detailContainer,
               {
                 borderBottomColor: border,
               },
             ]}
           >
-            <View style={styles.changeNameInputContainer}>
+            <View style={styles.NameInputContainer}>
               <Text style={{ color: grey }}>NAME</Text>
-              <TextInput
-                onBlur={() => {
-                  setTextInputFocused(false);
-                }}
-                onChangeText={setGroupName}
-                onFocus={() => {
-                  setTextInputFocused(true);
-                }}
-                placeholder='Add a group name'
-                placeholderTextColor={grey}
-                ref={textInputRef}
-                style={[{ color: black }, styles.changeNameInputBox]}
-                value={groupName}
-              />
-            </View>
-            <View style={[styles.row, { opacity: textInputFocused ? 1 : 0 }]}>
-              <TouchableOpacity
-                onPress={() => {
-                  setGroupName(channel.data?.name);
-                  textInputRef.current && textInputRef.current.blur();
-                }}
-                style={{
-                  paddingRight: 8,
-                }}
-              >
-                <CircleClose height={24} width={24} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={async () => {
-                  await channel.update({
-                    ...channel.data,
-                    name: groupName,
-                  } as Parameters<Channel<StreamChatGenerics>['update']>[0]);
-                  if (textInputRef.current) {
-                    textInputRef.current.blur();
-                  }
-                }}
-              >
-                {!!groupName && <Check fill={accent_blue} height={24} width={24} />}
-              </TouchableOpacity>
+              <Text style={[{ color: black }, styles.groupNameBox]}>{groupName}</Text>
             </View>
           </View>
+          {rfqDetail && rfqDetail.properties.length > 0 && (
+            <View
+              style={[
+                styles.detailContainer,
+                {
+                  borderBottomColor: border,
+                },
+              ]}
+            >
+              <Text style={{ color: grey }}>PROPERTIES</Text>
+              <View style={styles.propertiesContainer}>
+                {rfqDetail.properties?.map((property) => {
+                  return (
+                    <View style={styles.displayAddressContainer} key={property.id}>
+                      <MapPin height={12} width={12} color={grey_dark} />
+                      <Text style={[styles.displayAddress]}>{property.address.display}</Text>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          )}
+
           <TouchableOpacity
             style={[
               styles.actionContainer,
