@@ -92,8 +92,8 @@ android {
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
-        versionCode 28
-        versionName "1.0.0"
+        versionCode 32
+        versionName "1.0.1"
     }
 
     signingConfigs {
@@ -123,7 +123,6 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
@@ -146,7 +145,7 @@ android {
             targetSdkVersion rootProject.ext.targetSdkVersion
             resValue "string", "build_config_package", "com.vendorpm.app"
             signingConfig signingConfigs.prodRelease
-            versionCode 2
+            versionCode 5
             versionName "1.0.1"
         }
         stage {

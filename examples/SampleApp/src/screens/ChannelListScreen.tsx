@@ -21,7 +21,7 @@ import type { StreamChatGenerics } from '../types';
 import { MapPin } from 'react-native-feather';
 import { rfq } from '../api/query/rfq.query';
 import { user } from '../api/query/user.query';
-import { isPm, isVendor } from '../utils/user.util';
+import { isVendor } from '../utils/user.util';
 
 const styles = StyleSheet.create({
   channelListContainer: {
@@ -90,34 +90,27 @@ const options = {
   watch: true,
 };
 
-const CustomPreviewTitle = (prop: ChannelPreviewTitleProps<StreamChatGenerics>) => {
+const CustomPreviewTitle = (
+  prop: ChannelPreviewTitleProps<StreamChatGenerics>,
+  isVendorUser: boolean,
+) => {
   const { channel } = prop;
   const {
     theme: {
       colors: { grey_dark },
     },
   } = useTheme();
-  const { data: userDetail } = user.query.useGet();
-
-  const isVendorUser = isVendor(userDetail);
-  const isPmUser = isPm(userDetail);
 
   const rfqId = Number(channel.data?.rfq_id);
   const enableVendorQueries = isVendorUser && channel.type === 'rfq_chat';
-  const enablePmQueries = isPmUser && channel.type === 'rfq_chat';
 
   const vendorRfqQuery = rfq.query.useGet(rfqId, {
     enabled: enableVendorQueries,
   });
 
-  const pmRfqQuery = rfq.query.useGetPmRfq(rfqId, {
-    enabled: enablePmQueries,
-  });
-
   const vendorRfq = vendorRfqQuery.data;
-  const pmRfq = pmRfqQuery.data;
 
-  const rfqDetail = vendorRfq || pmRfq;
+  const rfqDetail = vendorRfq;
 
   return (
     <View style={styles.PreviewTitle}>
@@ -154,9 +147,12 @@ export const ChannelListScreen: React.FC = () => {
       colors: { black, grey, grey_gainsboro, grey_whisper, white, white_snow },
     },
   } = useTheme();
-
   const searchInputRef = useRef<TextInput | null>(null);
   const scrollRef = useRef<FlatList<Channel<StreamChatGenerics>> | null>(null);
+
+  const { data: userDetail } = user.query.useGet();
+
+  const isVendorUser = isVendor(userDetail);
 
   const [searchInputText, setSearchInputText] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -278,7 +274,7 @@ export const ChannelListScreen: React.FC = () => {
               Preview={ChannelPreview}
               setFlatListRef={setScrollRef}
               sort={sort}
-              PreviewTitle={CustomPreviewTitle}
+              PreviewTitle={(prop) => CustomPreviewTitle(prop, isVendorUser)}
               keyExtractor={(item) => item.id.toString()}
             />
           </View>

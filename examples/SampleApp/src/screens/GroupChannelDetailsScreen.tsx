@@ -33,7 +33,7 @@ import { Pin } from '../icons/Pin';
 import { rfq } from '../api/query/rfq.query';
 import { MapPin } from 'react-native-feather';
 import { user } from '../api/query/user.query';
-import { isPm, isVendor } from '../utils/user.util';
+import { isVendor } from '../utils/user.util';
 
 const styles = StyleSheet.create({
   actionContainer: {
@@ -182,23 +182,15 @@ export const GroupChannelDetailsScreen: React.FC<GroupChannelDetailsProps> = ({
   const { setOverlay } = useOverlayContext();
   const { data: userDetail } = user.query.useGet();
   const isVendorUser = isVendor(userDetail);
-  const isPmUser = isPm(userDetail);
   const rfqId = Number(channel.data?.rfq_id);
   const enableVendorQueries = isVendorUser && channel.type === 'rfq_chat';
-  const enablePmQueries = isPmUser && channel.type === 'rfq_chat';
 
   const vendorRfqQuery = rfq.query.useGet(rfqId, {
     enabled: enableVendorQueries,
   });
-
-  const pmRfqQuery = rfq.query.useGetPmRfq(rfqId, {
-    enabled: enablePmQueries,
-  });
-
   const vendorRfq = vendorRfqQuery.data;
-  const pmRfq = pmRfqQuery.data;
 
-  const rfqDetail = vendorRfq || pmRfq;
+  const rfqDetail = vendorRfq;
 
   const {
     theme: {
